@@ -49,4 +49,4 @@ pass
     - `Guest []` Guests
     - `Vendor []` Vendors
     - `Task []` Tasks
-    - `CheckList []` CheckLists
+    - `CheckList []` Checklists
