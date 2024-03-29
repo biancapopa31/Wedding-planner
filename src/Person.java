@@ -14,6 +14,9 @@ public class Person {
         this.firstName = firstName;
     }
 
+    public Person() {
+    }
+
     public String getLastName() {
         return lastName;
     }
