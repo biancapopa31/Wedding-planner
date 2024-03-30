@@ -1,5 +1,7 @@
 import java.time.LocalDate;
 
+//TODO Debugging!!!
+
 public class App {
     public static Wedding wedding = new Wedding();
 
@@ -31,7 +33,8 @@ public class App {
         
 
         Service service = new Service();
-        service.addTaskToChecklist(task3, checklist1, 0);
+        service.addTaskToChecklist(task3, checklist1);
+        wedding.addChecklist(checklist1);
         int mainInput = -1;
         while (mainInput != 7) {
             
@@ -180,30 +183,28 @@ public class App {
                     }
                 case 6:
                     input = -1;
-                    // while (input != 6) {
-                    //     input = service.checklistMenu();
-                    //     switch (input) {
-                    //         case 1:
-                    //             service.showChecklist();
-                    //             service.waitForAnyKey();
-                    //             break;
-                    //         case 2:
-                    //             service.addTask();
-                    //             break;
-                    //         case 3:
-                    //             service.removeTask(service.getTaskIdFromUser());
-                    //             break;
-                    //         case 4:
-                    //             service.editTask(service.getTaskIdFromUser());
-                    //             break;
-                    //         case 5:
-                    //             service.findTask();
-                    //             service.waitForAnyKey();
-                    //             break;
-                    //         default:
-                    //             break;
-                    //     }
-                    // }
+                    while (input != 5) {
+                        input = service.checklistMenu();
+                        switch (input) {
+                            case 1:
+                                service.showChecklists();
+                                service.waitForAnyKey();
+                                break;
+                            case 2:
+                                service.addChecklist();
+                                break;
+                            case 3:
+                                service.showChecklists();
+                                service.removeChecklist(service.userInput());
+                                break;
+                            case 4:
+                                service.showChecklists();
+                                service.editChecklist(service.userInput());
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 case 7:
                     service.exit();
                     break;

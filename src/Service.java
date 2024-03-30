@@ -124,13 +124,23 @@ public class Service {
         clearScreen();
         System.out.println("Checklist menu");
         System.out.println("\n\n1. Show checklists");
-        System.out.println("2. Show unasigned tasks");
-        System.out.println("3. Add checklist");
-        System.out.println("4. Remove checklist");
+        System.out.println("2. Add checklist");
+        System.out.println("3. Remove checklist");
         System.out.println("4. Edit checklist");
         System.out.println("5. Back to main menu");
 
         return userInput();
+    }
+
+    public void showChecklists(){
+        clearScreen();
+        System.out.println("Checklists");
+        List<Checklist> checklists = App.wedding.getChecklists();
+        int n = checklists.size();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println(i+1 + ". " + checklists.get(i) + "\n");
+        }
     }
 
     public void showAllTasks(){
@@ -192,8 +202,22 @@ public class Service {
         }
     }
 
-    public void addTaskToChecklist(Task task, Checklist checklist, int index) {
-        task.setChecklistId(index);
+    public void addChecklist(){
+        clearScreen();
+        System.out.println("Add checklist");
+        System.out.print("Enter checklist name: ");
+        scanner.nextLine();
+        String name = scanner.nextLine();
+        System.out.print("Enter checklist description: ");
+        String description = scanner.nextLine();
+
+        Checklist newChecklist = new Checklist(name, description);
+
+        App.wedding.addChecklist(newChecklist);
+    }
+
+    public void addTaskToChecklist(Task task, Checklist checklist) {
+        task.setChecklistId(checklist.getId());
         checklist.addTask(task);
     }
 
@@ -274,6 +298,14 @@ public class Service {
         return newPerson;
     }
 
+    public void removeChecklist(int index){
+        clearScreen();
+        Checklist checklist = App.wedding.getChecklists().get(index - 1);
+        checklist.clearChecklist();
+
+        App.wedding.removeChecklist(index - 1);
+    }
+
     public void removeTask(int index){
         clearScreen();
         App.wedding.removeTask(findTaskByIndex(index));
@@ -301,8 +333,63 @@ public class Service {
         table.clearTable();
         
         App.wedding.removeTable(table);
-
     }
+
+    public void editChecklist(int index){
+        clearScreen();
+        Checklist checklist = App.wedding.getChecklists().get(index - 1);
+
+        int input = -1;
+        while (input != 4) {
+            clearScreen();
+            System.out.println("Edit checklist");
+            System.out.println(checklist);
+
+            System.out.println("\n\n1. Edit name");
+            System.out.println("2. Edit description");
+            System.out.println("3. Add task");
+            System.out.println("4. Remove task");
+            System.out.println("5. Clear checklist");
+            System.out.println("6. Back");
+            input = userInput();
+
+            switch (input) {
+                case 1:
+                    System.out.print("Enter new name: ");
+                    scanner.nextLine();
+                    checklist.setName(scanner.nextLine());
+                    break;
+                case 2:
+                    System.out.print("Enter new description: ");
+                    scanner.nextLine();
+                    checklist.setDescription(scanner.nextLine());
+                    break;
+                case 3:
+                    showAllTasks();
+                    System.out.print("Enter task index: ");
+                    Task task = findTaskByIndex(scanner.nextInt());
+                    if (task.getChecklistId() != -1){
+                        System.out.println("Task is already assigned to a checklist");
+                        waitForAnyKey();
+                    }
+                    else
+                        addTaskToChecklist(task, checklist);
+                    break;
+                case 4:
+                    //TODO: Show tasks in checklist and remove the chosen task
+                    //TODO: Poate am problema asta si la Table?
+                    System.out.print("Enter task index: ");
+                    checklist.removeTask(findTaskByIndex(scanner.nextInt()));
+                    break;
+                case 5:
+                    checklist.clearChecklist();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     public void editTask(int index){
         clearScreen();
         Task task = findTaskByIndex(index);
