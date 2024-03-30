@@ -42,9 +42,6 @@ public class Checklist {
         this.description = description;
     }
 
-    public void setTasks(TreeSet<Task> tasks) {
-        this.tasks = tasks;
-    }
 
     public void addTask(Task task) {
         tasks.add(task);

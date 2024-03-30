@@ -1,7 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Service {
 
@@ -31,11 +30,11 @@ public class Service {
         clearScreen();
         System.out.println("Welcome to your wedding planner!\n\n");
         System.out.println("1. General wedding information");
-        System.out.println("2. Guest list");
-        System.out.println("3. Table list");
-        System.out.println("4. Vendor list");
-        System.out.println("5. Checklists");
-        System.out.println("6. Task list");
+        System.out.println("2. Guests");
+        System.out.println("3. Tables");
+        System.out.println("4. Vendors");
+        System.out.println("5. Tasks");
+        System.out.println("6. Checklists");
         System.out.println("7. Exit");
 
         return userInput();
@@ -106,6 +105,60 @@ public class Service {
         return userInput();
     }
 
+    public int tasksMenu(){
+        clearScreen();
+        System.out.println("Tasks menu");
+        System.out.println("Number of  tasks: " + App.wedding.getTasks().size());
+
+        System.out.println("\n\n1. Show all tasks");
+        System.out.println("2. Show unassigned task");
+        System.out.println("3. Add task");
+        System.out.println("4. Remove task");
+        System.out.println("5. Edit task");
+        System.out.println("6. Back to main menu");
+
+        return userInput();
+    }
+
+    public int checklistMenu(){
+        clearScreen();
+        System.out.println("Checklist menu");
+        System.out.println("\n\n1. Show checklists");
+        System.out.println("2. Show unasigned tasks");
+        System.out.println("3. Add checklist");
+        System.out.println("4. Remove checklist");
+        System.out.println("4. Edit checklist");
+        System.out.println("5. Back to main menu");
+
+        return userInput();
+    }
+
+    public void showAllTasks(){
+        clearScreen();
+        System.out.println("All tasks");
+        Set<Task> tasks = App.wedding.getTasks();
+        int i = 1;
+
+        for (Task task : tasks) {
+            System.out.println(i  + ". " + task + "\n");
+            i++;
+        }
+    }
+
+    public void showUnassignedTasks(){
+        clearScreen();
+        System.out.println("Unassigned tasks");
+        Set<Task> tasks = App.wedding.getTasks();
+        int i = 1;
+
+        for (Task task : tasks) {
+            if(task.getChecklistId() == -1){
+                System.out.println(i  + ". " + task + "\n");
+                i++;
+            }
+        }
+    }
+
     public void showVendors(){
         clearScreen();
         System.out.println("Vendor list");
@@ -139,18 +192,38 @@ public class Service {
         }
     }
 
+    public void addTaskToChecklist(Task task, Checklist checklist, int index) {
+        task.setChecklistId(index);
+        checklist.addTask(task);
+    }
+
+    public void addTask(){
+        clearScreen();
+        System.out.println("Add task");
+        System.out.print("Enter task name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter task description: ");
+        String description = scanner.nextLine();
+        System.out.print("Enter due date (Date format: yyyy-mm-dd): ");
+        String dueDate = scanner.next();
+
+        Task newTask = new Task(name, description, LocalDate.parse(dueDate));
+
+        App.wedding.addTask(newTask);
+    }
+
     public void addVendor(){
         clearScreen();
         System.out.println("Add vendor");
         Person newPerson = createPersonFromUserInput();
-        System.out.println("Enter email: ");
+        System.out.print("Enter email: ");
         String email = scanner.next();
-        System.out.println("Enter price: ");
+        System.out.print("Enter price: ");
         double price = scanner.nextDouble();
-        System.out.println("Enter service type: ");
-        String serviceType = scanner.next();
-        System.out.println("Enter notes: ");
-        String notes = scanner.next();
+        System.out.print("Enter service type: ");
+        String serviceType = scanner.nextLine();
+        System.out.print("Enter notes: ");
+        String notes = scanner.nextLine();
 
         Vendor newVendor = new Vendor(newPerson, email, price, serviceType, notes);
 
@@ -201,14 +274,22 @@ public class Service {
         return newPerson;
     }
 
+    public void removeTask(int index){
+        clearScreen();
+        App.wedding.removeTask(findTaskByIndex(index));
+        //TODO: Remove task from checklist
+    }
+
     public void removeVendor(int index){
         clearScreen();
         App.wedding.removeVendor(index - 1);
+        //TODO: Remove vendor from table
     }
 
     public void removeGuest(int index){
         clearScreen();
         App.wedding.removeGuest(index - 1);
+        //TODO: Remove guest from table
     }
 
 
@@ -221,6 +302,46 @@ public class Service {
         
         App.wedding.removeTable(table);
 
+    }
+    public void editTask(int index){
+        clearScreen();
+        Task task = findTaskByIndex(index);
+
+        int input = -1;
+        while (input != 4) {
+            clearScreen();
+            System.out.println("Edit task");
+            System.out.println(task);
+
+            System.out.println("\n\n1. Edit name");
+            System.out.println("2. Edit description");
+            System.out.println("3. Edit due date");
+            System.out.println("4. Change completion status");
+            System.out.println("5. Back");
+            input = userInput();
+
+            switch (input) {
+                case 1:
+                    System.out.print("Enter new name: ");
+                    scanner.nextLine();
+                    task.setName(scanner.nextLine());
+                    break;
+                case 2:
+                    System.out.print("Enter new description: ");
+                    scanner.nextLine();
+                    task.setDescription(scanner.nextLine());
+                    break;
+                case 3:
+                    System.out.print("Enter new due date: ");
+                    task.setDueDate(LocalDate.parse(scanner.next()));
+                    break;
+                case 5:
+                    task.setComplete(!task.isComplete());
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void editVendor(int index){
@@ -409,6 +530,18 @@ public class Service {
                     break;
             }
         }
+    }
+
+    public Task findTaskByIndex(int index){
+        Set<Task> tasks = App.wedding.getTasks();
+        int i = 1;
+        for(Task task : tasks){
+            if(i == index){
+                return task;
+            }
+            i++;
+        }
+        return null;
     }
 
     public Table findTable(int index){

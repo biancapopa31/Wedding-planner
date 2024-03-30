@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class App {
     public static Wedding wedding = new Wedding();
 
@@ -17,14 +19,26 @@ public class App {
 
         wedding.addTable(table1);
 
+        Task task1 = new Task("Task 1", "Description 1", LocalDate.now());
+        Task task2 = new Task("Task 2", "Description 2", LocalDate.now());
+        Task task3 = new Task("Task 3", "Description 3", LocalDate.now());
+        wedding.addTask(task1);
+        wedding.addTask(task2);
+        wedding.addTask(task3);
+
+
+        Checklist checklist1 = new Checklist("Checklist 1", "Description 1");
+        
+
         Service service = new Service();
-        int input = -1;
-        while (input != 7) {
+        service.addTaskToChecklist(task3, checklist1, 0);
+        int mainInput = -1;
+        while (mainInput != 7) {
             
-            input = service.MainMenu();
-            switch(input){
+            mainInput = service.MainMenu();
+            switch(mainInput){
                 case 1:
-                    input = -1;
+                    int input = -1;
                     while (input != 7) {
                         input = service.generalInformationMenu();
                         switch (input) {
@@ -135,7 +149,36 @@ public class App {
                                 break;
                         }
                     }
+                    break;
                 case 5:
+                    input = -1;
+                    while (input != 6) {
+                        input = service.tasksMenu();
+                        switch (input) {
+                            case 1:
+                                service.showAllTasks();
+                                service.waitForAnyKey();
+                                break;
+                            case 2:
+                                service.showUnassignedTasks();
+                                service.waitForAnyKey();
+                                break;
+                            case 3:
+                                service.addTask();
+                                break;
+                            case 4:
+                                service.showAllTasks();
+                                service.removeTask(service.userInput());
+                                break;
+                            case 5:
+                                service.showAllTasks();
+                                service.editTask(service.userInput());
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                case 6:
                     input = -1;
                     // while (input != 6) {
                     //     input = service.checklistMenu();

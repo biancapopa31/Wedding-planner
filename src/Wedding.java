@@ -1,6 +1,5 @@
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Wedding {
 
@@ -17,7 +16,7 @@ public class Wedding {
     private List<Table> tables = new ArrayList<>();
     private List<Vendor> vendors = new ArrayList<>();
     private List<Checklist> checklists = new ArrayList<>();
-    private List<Task> tasks = new ArrayList<>();
+    private Set<Task> tasks = new TreeSet<>();
 
     public Wedding() {
     }
@@ -105,6 +104,31 @@ public class Wedding {
     public void removeVendor(int index) {
         vendors.remove(index);
     }
+
+    public List<Checklist> getChecklists() {
+        return checklists;
+    }
+
+    public void addChecklist(Checklist checklist) {
+        checklists.add(checklist);
+    }
+
+    public void removeChecklist(int index) {
+        checklists.remove(index);
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+    }
+
     
 
 }

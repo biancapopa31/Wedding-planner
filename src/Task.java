@@ -1,11 +1,14 @@
 import java.time.LocalDate;
+import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task>{
 
     private String name;
     private String description;
     private Boolean isComplete;
     private LocalDate dueDate;
+    private int checklistId = -1;
+
 
     public Task(String name, String description, LocalDate dueDate) {
         this.name = name;
@@ -63,14 +66,29 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+    public int getChecklistId() {
+        return checklistId;
+    }
+
+    public void setChecklistId(int checklistId) {
+        this.checklistId = checklistId;
+    }
+
     @Override
     public String toString() {
-        return name + "Completed: " + isComplete + " Due date: " + dueDate + "\nDescription: " + description;
+        return name + "\nCompleted: " + isComplete + "\nDue date: " + dueDate + "\nDescription: " + description;
     }
 
-    //@Override
+    @Override
     public int compareTo(Task task) {
-        return this.dueDate.compareTo(task.dueDate) == 0 ? -this.isComplete.compareTo(task.isComplete) : this.dueDate.compareTo(task.dueDate);
-    }
+        int comp = this.isComplete.compareTo(task.isComplete);
+        if(comp == 0){
+            comp = this.dueDate.compareTo(task.dueDate);
+            if(comp == 0){
+                comp = this.name.compareTo(task.name);
+            }
 
+        }        
+        return comp;
+    }
 }
