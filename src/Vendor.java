@@ -19,6 +19,14 @@ public class Vendor extends Person{
         this.serviceType = serviceType;
     }
 
+    public Vendor(Person person, String email, double price, String serviceType, String notes) {
+        super(person);
+        this.email = email;
+        this.price = price;
+        this.serviceType = serviceType;
+        this.notes = notes;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -53,7 +61,7 @@ public class Vendor extends Person{
 
     @Override
     public String toString() {
-        return "Contact person: "+ super.toString() + " " + email + "\nPrice: " + price + " " + serviceType + "\n Notes" + notes;
+        return "Contact person: "+ super.toString() + "\nEmail: " + email + "\nPrice: " + price + " " + serviceType + "\nNotes: " + notes;
     }
 
     

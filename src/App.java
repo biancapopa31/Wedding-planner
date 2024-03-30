@@ -3,11 +3,20 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
-        Guest guest1 = new Guest("Doe", "John", "1234567890", InviteStatus.ATTENDING, Side.BRIDE, Role.MAID_OF_HONOR, Relationship.FAMILY);
-        Guest guest2 = new Guest("Doe", "Jane", "1234567890", InviteStatus.NOT_ATTENDING, Side.BRIDE, Role.NONE, Relationship.FRIEND);
-        wedding.addGuest(guest1);
-        wedding.addGuest(guest2);
+        Person guest1 = new Guest("Doe", "John", "1234567890", InviteStatus.ATTENDING, Side.BRIDE, Role.MAID_OF_HONOR, Relationship.FAMILY);
+        Person guest2 = new Guest("Doe", "Jane", "1234567890", InviteStatus.NOT_ATTENDING, Side.BRIDE, Role.NONE, Relationship.FRIEND);
+        Person vendor1 = new Vendor("Doe", "Jane", "1234567890", "Email", 1234,"Catering", "Notes");
         
+        wedding.addGuest((Guest) guest1);
+        wedding.addGuest((Guest) guest2);
+
+        wedding.addVendor((Vendor) vendor1);
+        
+        Table table1 = new Table(1, 10);
+        table1.addMember(guest1);
+
+        wedding.addTable(table1);
+
         Service service = new Service();
         int input = -1;
         while (input != 7) {
@@ -55,13 +64,15 @@ public class App {
                                 service.addGuest();
                                 break;
                             case 3:
-                                service.removeGuest(service.getGuestIdFromUser());
+                                service.showGuests();
+                                service.removeGuest(service.userInput());
                                 break;
                             case 4:
-                                service.editGuest(service.getGuestIdFromUser());
+                                service.showGuests();
+                                service.editGuest(service.userInput());
                                 break;
                             case 5:
-                                service.findGuest();
+                                service.findGuestFromName();
                                 service.waitForAnyKey();
                                 break;
                             default:
@@ -69,6 +80,87 @@ public class App {
                         }
                     }
                     break;
+                case 3:
+                    input = -1;
+                    while (input != 6 ) {
+                        input = service.tableMenu();
+                        switch (input) {
+                            case 1:
+                                service.showTables();
+                                service.waitForAnyKey();
+                                break;
+                             case 2:
+                                 service.addTable();
+                                 break;
+                            case 3:
+                                service.showTables();
+                                service.removeTable(service.userInput());
+                                break;
+                            case 4:
+                                service.showTables();
+                                service.editTable(service.userInput());
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                    }
+                case 4:
+                    input = -1;
+                    while (input != 5) {
+                        input = service.vendorMenu();
+                        switch (input) {
+                            case 1:
+                                service.showVendors();
+                                service.waitForAnyKey();
+                                break;
+                            case 2:
+                                service.addVendor();
+                                break;
+                            case 3:
+                                service.showVendors();
+                                service.removeVendor(service.userInput());
+                                break;
+                            case 4:
+                                service.showVendors();
+                                service.editVendor(service.userInput());
+                                break;
+
+                            //TODO: Implement findVendor maybe?
+                            // case 5:
+                            //     service.findVendor();
+                            //     service.waitForAnyKey();
+                            //     break;
+                            default:
+                                break;
+                        }
+                    }
+                case 5:
+                    input = -1;
+                    // while (input != 6) {
+                    //     input = service.checklistMenu();
+                    //     switch (input) {
+                    //         case 1:
+                    //             service.showChecklist();
+                    //             service.waitForAnyKey();
+                    //             break;
+                    //         case 2:
+                    //             service.addTask();
+                    //             break;
+                    //         case 3:
+                    //             service.removeTask(service.getTaskIdFromUser());
+                    //             break;
+                    //         case 4:
+                    //             service.editTask(service.getTaskIdFromUser());
+                    //             break;
+                    //         case 5:
+                    //             service.findTask();
+                    //             service.waitForAnyKey();
+                    //             break;
+                    //         default:
+                    //             break;
+                    //     }
+                    // }
                 case 7:
                     service.exit();
                     break;

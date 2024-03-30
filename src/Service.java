@@ -38,37 +38,35 @@ public class Service {
         System.out.println("6. Task list");
         System.out.println("7. Exit");
 
-        
         return userInput();
-        
     }
 
 
     public int generalInformationMenu(){
-            clearScreen();
-            System.out.println("General wedding information");
+        clearScreen();
+        System.out.println("General wedding information");
 
-            System.out.println("Location: " + App.wedding.getLocation());
-            System.out.println("Date: " + App.wedding.getDate());
-            System.out.println("Bride: " + App.wedding.getBride());
-            System.out.println("Groom: " + App.wedding.getGroom());
-            System.out.println("Godmother: " + App.wedding.getGodmother());
-            System.out.println("Godfather: " + App.wedding.getGodfather());
+        System.out.println("Location: " + App.wedding.getLocation());
+        System.out.println("Date: " + App.wedding.getDate());
+        System.out.println("Bride: " + App.wedding.getBride());
+        System.out.println("Groom: " + App.wedding.getGroom());
+        System.out.println("Godmother: " + App.wedding.getGodmother());
+        System.out.println("Godfather: " + App.wedding.getGodfather());
 
-            System.out.println("\n\n1. Edit location");
-            System.out.println("2. Edit date");
-            System.out.println("3. Edit bride");
-            System.out.println("4. Edit groom");
-            System.out.println("5. Edit godmother");
-            System.out.println("6. Edit godfather");
-            System.out.println("7. Back to main menu");
+        System.out.println("\n\n1. Edit location");
+        System.out.println("2. Edit date");
+        System.out.println("3. Edit bride");
+        System.out.println("4. Edit groom");
+        System.out.println("5. Edit godmother");
+        System.out.println("6. Edit godfather");
+        System.out.println("7. Back to main menu");
 
         return userInput();
     }
 
     public int guestsMenu(){
         clearScreen();
-        System.out.println("Guest list");
+        System.out.println("Guest menu");
         System.out.println("Number of guests: " + App.wedding.getGuests().size());
         System.out.println("\n\n1. Show guests");
         System.out.println("2. Add guest");
@@ -80,6 +78,56 @@ public class Service {
         return userInput();
     }
 
+    public int tableMenu(){
+        clearScreen();
+        System.out.println("Table menu");
+        System.out.println("Number of tables: " + App.wedding.getTables().size());
+        System.out.println("\n\n1. Show tables");
+        System.out.println("2. Add table");
+        System.out.println("3. Remove table");
+        System.out.println("4. Edit table");
+        System.out.println("5. Find table");
+        System.out.println("6. Back to main menu");
+
+        return userInput();
+    }
+
+    public int vendorMenu(){
+        clearScreen();
+        System.out.println("Vendor menu");
+        System.out.println("Number of vendors: " + App.wedding.getVendors().size());
+        System.out.println("\n\n1. Show vendors");
+        System.out.println("2. Add vendor");
+        System.out.println("3. Remove vendor");
+        System.out.println("4. Edit vendor");
+       // System.out.println("5. Find vendor");
+        System.out.println("5. Back to main menu");
+
+        return userInput();
+    }
+
+    public void showVendors(){
+        clearScreen();
+        System.out.println("Vendor list");
+        List<Vendor> vendors = App.wedding.getVendors();
+        int n = vendors.size();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println(i + 1 + ". " + vendors.get(i) + "\n");
+        }
+    }
+
+    public void showTables(){
+        clearScreen();
+        System.out.println("Table list");
+        List<Table> tables = App.wedding.getTables();
+        int n = tables.size();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println(tables.get(i)+"\n");
+        }
+    }
+
     public void showGuests(){
         clearScreen();
         System.out.println("Guest list");
@@ -87,19 +135,45 @@ public class Service {
         int n = guests.size();
 
         for (int i = 0; i < n; i++) {
-            System.out.println(i + 1 + ". " + guests.get(i));
+            System.out.println(i + 1 + ". " + guests.get(i) + "\n");
         }
+    }
+
+    public void addVendor(){
+        clearScreen();
+        System.out.println("Add vendor");
+        Person newPerson = createPersonFromUserInput();
+        System.out.println("Enter email: ");
+        String email = scanner.next();
+        System.out.println("Enter price: ");
+        double price = scanner.nextDouble();
+        System.out.println("Enter service type: ");
+        String serviceType = scanner.next();
+        System.out.println("Enter notes: ");
+        String notes = scanner.next();
+
+        Vendor newVendor = new Vendor(newPerson, email, price, serviceType, notes);
+
+        App.wedding.addVendor(newVendor);
+    }
+
+    public void addTable(){
+        clearScreen();
+        System.out.println("Add table");
+        System.out.print("Enter table number: ");
+        int tableNumber = scanner.nextInt();
+        System.out.print("Enter capacity: ");
+        int capacity = scanner.nextInt();
+
+        Table newTable = new Table(tableNumber, capacity);
+
+        App.wedding.addTable(newTable);
     }
 
     public void addGuest(){
         clearScreen();
         System.out.println("Add guest");
-        System.out.print("Enter last name: ");
-        String lastName = scanner.next();
-        System.out.print("Enter first name: ");
-        String firstName = scanner.next();
-        System.out.print("Enter telephone: ");
-        String telephone = scanner.next();
+        Person newPerson = createPersonFromUserInput();
         System.out.print("Enter invite status (1.ATTENDING, 2.NOT_ATTENDING, 3.SENT, 4.NOT_SENT): ");
         int inviteStatus = scanner.nextInt()-1;
         System.out.print("Enter side (1.BRIDE, 2.GROOM): ");
@@ -109,20 +183,101 @@ public class Service {
         System.out.print("Enter relationship (1.FAMILY, 2.FRIEND, 3.OTHER): ");
         int relationship = scanner.nextInt()-1;
 
-        Guest newGuest = new Guest(lastName, firstName, telephone, inviteStatus, side, role, relationship);
+        Guest newGuest = new Guest(newPerson, inviteStatus, side, role, relationship);
 
         App.wedding.addGuest(newGuest);
     }
 
-    public int getGuestIdFromUser(){
-        showGuests();
-        return userInput();
+    public Person createPersonFromUserInput(){
+        System.out.print("Enter last name: ");
+        String lastName = scanner.next();
+        System.out.print("Enter first name: ");
+        String firstName = scanner.next();
+        System.out.print("Enter telephone: ");
+        String telephone = scanner.next();
 
+        Person newPerson = new Person(lastName, firstName, telephone);
+
+        return newPerson;
+    }
+
+    public void removeVendor(int index){
+        clearScreen();
+        App.wedding.removeVendor(index - 1);
     }
 
     public void removeGuest(int index){
         clearScreen();
-        App.wedding.getGuests().remove(index - 1);
+        App.wedding.removeGuest(index - 1);
+    }
+
+
+    public void removeTable(int index){
+        clearScreen();
+
+        Table table = findTable(index);
+
+        table.clearTable();
+        
+        App.wedding.removeTable(table);
+
+    }
+
+    public void editVendor(int index){
+        clearScreen();
+        Vendor vendor = App.wedding.getVendors().get(index - 1);
+
+        int input = -1;
+        while (input != 5) {
+            clearScreen();
+            System.out.println("Edit vendor");
+            System.out.println(vendor);
+
+            System.out.println("\n\n1. Edit last name");
+            System.out.println("2. Edit first name");
+            System.out.println("3. Edit telephone");
+            System.out.println("4. Edit email");
+            System.out.println("5. Edit price");
+            System.out.println("6. Edit service type");
+            System.out.println("7. Edit notes");
+            System.out.println("8. Back");
+            input = userInput();
+
+            switch (input) {
+                case 1:
+                    System.out.print("Enter new last name: ");
+                    vendor.setLastName(scanner.next());
+                    break;
+                case 2:
+                    System.out.print("Enter new first name: ");
+                    vendor.setFirstName(scanner.next());
+                    break;
+                case 3:
+                    System.out.print("Enter new telephone: ");
+                    vendor.setTelephone(scanner.next());
+                    break;
+                case 4:
+                    System.out.print("Enter new email: ");
+                    vendor.setEmail(scanner.next());
+                    break;
+                case 5:
+                    System.out.print("Enter new price: ");
+                    vendor.setPrice(scanner.nextDouble());
+                    break;
+                case 6:
+                    System.out.print("Enter new service type: ");
+                    scanner.nextLine();
+                    vendor.setServiceType(scanner.nextLine());
+                    break;
+                case 7:
+                    System.out.print("Enter new notes: ");
+                    scanner.nextLine();
+                    vendor.setNotes(scanner.nextLine());
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void editGuest(int index){
@@ -142,7 +297,7 @@ public class Service {
             System.out.println("5. Edit side");
             System.out.println("6. Edit role");
             System.out.println("7. Edit relationship");
-            System.out.println("8. Back to main menu");
+            System.out.println("8. Back");
             input = userInput();
 
             switch (input) {
@@ -180,7 +335,94 @@ public class Service {
         }
     }
 
-    public void findGuest(){
+    public void editTable(int index){
+        clearScreen();
+        Table table = findTable(index);
+        List<Person> members = table.getmembers();
+
+        int input = -1;
+        while (input != 3) {
+            clearScreen();
+            System.out.println("Edit table");
+            System.out.println(table);
+
+            System.out.println("\n\n1. Edit table number");
+            System.out.println("2. Edit capacity");
+            System.out.println("3. Add member");
+            System.out.println("4. Remove member");
+            System.out.println("5. Clear table");
+            System.out.println("6. Back to main menu");
+            input = userInput();
+
+            switch (input) {
+                case 1:
+                    System.out.print("Enter new table number: ");
+                    int newTableNumber = scanner.nextInt();
+                    if (findTable(newTableNumber) != null) {
+                        System.out.println("Table number already exists");
+                        break;
+                    }
+                    table.setTableNumber(newTableNumber);
+                    break;
+                case 2:
+                    System.out.print("Enter new capacity: ");
+                    int newCapacity = scanner.nextInt();
+                    if(newCapacity < members.size()){
+                        System.out.println("New capacity is less than the number of members in the table");
+                        break;
+                    }
+                    table.setCapacity(newCapacity);
+                    break;
+                case 3:
+                    if(table.isFull()){
+                        System.out.println("Table is full");
+                        break;
+                    }
+                    //TODO: Add vendor
+                    showGuests();
+                    System.out.print("Enter member index: ");
+                    int newMemberIndex = scanner.nextInt();
+                    Person newMember = App.wedding.getGuests().get(newMemberIndex - 1);
+                    if(newMember.getTableNumber() != -1){
+                        System.out.println("Guest is already assigned to table " + newMember.getTableNumber());
+                        System.out.println("Do you want change the table? (y/n)");
+                        String changeTable = scanner.next();
+                        if(changeTable.equals("y")){
+                            findTable(newMember.getTableNumber()).removeMember(newMember);
+                            table.addMember(newMember);
+                        } else {
+                            break;
+                        }
+                    }else{
+                        table.addMember(newMember);
+                    }
+                   
+                    break;
+                case 4:
+                    System.out.print("Enter member index: ");
+                    table.removeMember(members.get(scanner.nextInt() - 1));
+                    break;                    
+                case 5:
+                    table.clearTable();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public Table findTable(int index){
+        List<Table> tables = App.wedding.getTables();
+        int n = tables.size();
+        for(int i = 0; i < n; i++){
+            if(tables.get(i).getTableNumber() == index){
+                return tables.get(i);
+            }
+        }
+        return null;
+    }
+
+    public void findGuestFromName(){
         clearScreen();
         System.out.println("Find guest");
         System.out.print("Enter last name or -: ");

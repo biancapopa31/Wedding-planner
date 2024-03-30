@@ -3,6 +3,9 @@ public class Person {
     private String firstName;
     private String telephone;
 
+    private int tableNumber = -1;
+    
+
     public Person(String lastName, String firstName, String telephone) {
         this.lastName = lastName;
         this.firstName = firstName;
@@ -12,6 +15,12 @@ public class Person {
     public Person(String lastName, String firstName) {
         this.lastName = lastName;
         this.firstName = firstName;
+    }
+
+    public Person(Person person) {
+        this.lastName = person.lastName;
+        this.firstName = person.firstName;
+        this.telephone = person.telephone;
     }
 
     public Person() {
@@ -41,6 +50,14 @@ public class Person {
         this.telephone = telephone;
     }
     
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
+    public void setTableNumber(int tableNumber) {
+        this.tableNumber = tableNumber;
+    }
+
 
     @Override
     public String toString() {

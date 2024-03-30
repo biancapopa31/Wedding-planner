@@ -78,6 +78,33 @@ public class Wedding {
         guests.add(guest);
     }
 
+    public void removeGuest(int index) {
+        guests.remove(index);
+    }
+
+    public List<Table> getTables() {
+        return tables;
+    }
+
+    public void addTable(Table table) {
+        tables.add(table);
+    }
+
+    public void removeTable(Table table) {
+        tables.remove(table);
+    }
+
+    public List<Vendor> getVendors() {
+        return vendors;
+    }
+
+    public void addVendor(Vendor vendor) {
+        vendors.add(vendor);
+    }
+
+    public void removeVendor(int index) {
+        vendors.remove(index);
+    }
     
 
 }

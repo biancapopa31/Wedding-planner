@@ -26,8 +26,7 @@ public class Guest extends Person{
     private InviteStatus inviteStatus;
     private Side side; 
     private Role role;
-    private Relationship relationship;
-    
+    private Relationship relationship;     
 
     public Guest(String lastName, String firstName, String telephone, InviteStatus inviteStatus, Side side, Role role, Relationship relationship) {
         super(lastName, firstName, telephone);
@@ -39,6 +38,14 @@ public class Guest extends Person{
 
     public Guest(String lastName, String firstName, String telephone, int inviteStatus, int side, int role, int relationship) {
         super(lastName, firstName, telephone);
+        this.inviteStatus = InviteStatus.values()[inviteStatus];
+        this.side = Side.values()[side];
+        this.role = Role.values()[role];
+        this.relationship = Relationship.values()[relationship];
+    }
+
+    public Guest(Person person, int inviteStatus, int side, int role, int relationship) {
+        super(person);
         this.inviteStatus = InviteStatus.values()[inviteStatus];
         this.side = Side.values()[side];
         this.role = Role.values()[role];

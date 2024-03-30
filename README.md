@@ -1,7 +1,7 @@
 ## Descrierea proiectului
 pass
 
-## Clase
+## Clase - orientativ
 - Person
     - `String` First Name
     - `String` Last Name
@@ -34,7 +34,6 @@ pass
     - `Int` tableNumber
     - `Int` capacity
     - `Person []` Members
-    - `String` Type (vendors table... )
 
 - Wedding
     - `LocalDate` Date

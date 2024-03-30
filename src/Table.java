@@ -4,9 +4,9 @@ import java.util.List;
 public class Table {
     private int tableNumber;
     private int capacity;
-    private List<Guest> members = new ArrayList<>();
+    private List<Person> members = new ArrayList<>();
 
-    public Table(int tableNumber, int capacity, List<Guest> members) {
+    public Table(int tableNumber, int capacity, List<Person> members) {
         if (capacity > members.size())
             throw new IllegalArgumentException("Too many members at the table.");
 
@@ -28,11 +28,14 @@ public class Table {
         return capacity;
     }
 
-    public List<Guest> getmembers() {
+    public List<Person> getmembers() {
         return members;
     }
 
     public void setTableNumber(int tableNumber) {
+        for (Person guest : members) {
+            guest.setTableNumber(tableNumber);
+        }
         this.tableNumber = tableNumber;
     }
 
@@ -40,19 +43,24 @@ public class Table {
         this.capacity = capacity;
     }
 
-    public void setmembers(List<Guest> members) {
+    public void setMembers(List<Person> members) {
         this.members = members;
     }
 
-    public void addGuest(Guest guest) {
+    public void addMember(Person guest) {
+        guest.setTableNumber(tableNumber);
         members.add(guest);
     }
 
-    public void removeGuest(Guest guest) {
+    public void removeMember(Person guest) {
+        guest.setTableNumber(-1);
         members.remove(guest);
     }
 
     public void clearTable() {
+        for (Person guest : members) {
+            guest.setTableNumber(-1);
+        }
         members.clear();
     }
 
@@ -62,9 +70,9 @@ public class Table {
 
     @Override
     public String toString() {
-        String str = "Table: " + tableNumber + "Capacity " + capacity + "\n";
+        String str = "Table: " + tableNumber + " Capacity: " + capacity + "\n";
 
-        for (Guest guest : members) {
+        for (Person guest : members) {
             str += guest + "\n";
         }
 
