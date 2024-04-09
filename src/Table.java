@@ -73,7 +73,7 @@ public class Table {
         String str = "Table: " + tableNumber + " Capacity: " + capacity + "\n";
 
         for (Person guest : members) {
-            str += guest + "\n";
+            str += (guest instanceof Guest ? "Guest\n" : "Vendor\n") + guest + "\n\n";
         }
 
         return str;

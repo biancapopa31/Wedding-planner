@@ -6,7 +6,7 @@ public class Service {
 
     Scanner scanner = new Scanner(System.in);
 
-    private void clearScreen(){
+    public void clearScreen(){
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
@@ -133,7 +133,6 @@ public class Service {
     }
 
     public void showChecklists(){
-        clearScreen();
         System.out.println("Checklists");
         List<Checklist> checklists = App.wedding.getChecklists();
         int n = checklists.size();
@@ -143,8 +142,17 @@ public class Service {
         }
     }
 
+    public void showTasksInChecklist(Checklist checklist){
+        TreeSet<Task> tasks = checklist.getTasks();
+        int i = 1;
+
+        for (Task task : tasks) {
+            System.out.println(i + ". " + task + "\n");
+            i++;
+        }
+    }
+
     public void showAllTasks(){
-        clearScreen();
         System.out.println("All tasks");
         Set<Task> tasks = App.wedding.getTasks();
         int i = 1;
@@ -156,7 +164,6 @@ public class Service {
     }
 
     public void showUnassignedTasks(){
-        clearScreen();
         System.out.println("Unassigned tasks");
         Set<Task> tasks = App.wedding.getTasks();
         int i = 1;
@@ -170,7 +177,6 @@ public class Service {
     }
 
     public void showVendors(){
-        clearScreen();
         System.out.println("Vendor list");
         List<Vendor> vendors = App.wedding.getVendors();
         int n = vendors.size();
@@ -181,7 +187,6 @@ public class Service {
     }
 
     public void showTables(){
-        clearScreen();
         System.out.println("Table list");
         List<Table> tables = App.wedding.getTables();
         int n = tables.size();
@@ -192,7 +197,6 @@ public class Service {
     }
 
     public void showGuests(){
-        clearScreen();
         System.out.println("Guest list");
         List<Guest> guests = App.wedding.getGuests();
         int n = guests.size();
@@ -373,13 +377,14 @@ public class Service {
                         waitForAnyKey();
                     }
                     else
-                        addTaskToChecklist(task, checklist);
+                        //addTaskToChecklist(task, checklist);
+                        checklist.addTask(task);
                     break;
                 case 4:
-                    //TODO: Show tasks in checklist and remove the chosen task
-                    //TODO: Poate am problema asta si la Table?
+                    clearScreen();
+                    showTasksInChecklist(checklist);
                     System.out.print("Enter task index: ");
-                    checklist.removeTask(findTaskByIndex(scanner.nextInt()));
+                    checklist.removeTask(findTaskInChecklistByIndex(scanner.nextInt(), checklist));
                     break;
                 case 5:
                     checklist.clearChecklist();
@@ -395,7 +400,7 @@ public class Service {
         Task task = findTaskByIndex(index);
 
         int input = -1;
-        while (input != 4) {
+        while (input != 5) {
             clearScreen();
             System.out.println("Edit task");
             System.out.println(task);
@@ -422,7 +427,7 @@ public class Service {
                     System.out.print("Enter new due date: ");
                     task.setDueDate(LocalDate.parse(scanner.next()));
                     break;
-                case 5:
+                case 4:
                     task.setComplete(!task.isComplete());
                     break;
                 default:
@@ -586,13 +591,21 @@ public class Service {
                         System.out.println("Table is full");
                         break;
                     }
-                    //TODO: Add vendor
+                    clearScreen();
                     showGuests();
+                    showVendors();
+                    System.out.println("Enter memeber type( 1. Guest, 2. Vendor): ");
+                    int memberType = scanner.nextInt();
                     System.out.print("Enter member index: ");
                     int newMemberIndex = scanner.nextInt();
-                    Person newMember = App.wedding.getGuests().get(newMemberIndex - 1);
+                    Person newMember;
+                    if(memberType == 1)
+                        newMember = App.wedding.getGuests().get(newMemberIndex - 1);
+                    else
+                        newMember = App.wedding.getVendors().get(newMemberIndex - 1);
+
                     if(newMember.getTableNumber() != -1){
-                        System.out.println("Guest is already assigned to table " + newMember.getTableNumber());
+                        System.out.println("This person is already assigned to table " + newMember.getTableNumber());
                         System.out.println("Do you want change the table? (y/n)");
                         String changeTable = scanner.next();
                         if(changeTable.equals("y")){
@@ -607,6 +620,7 @@ public class Service {
                    
                     break;
                 case 4:
+                    //TODO verif ca se sterge corect
                     System.out.print("Enter member index: ");
                     table.removeMember(members.get(scanner.nextInt() - 1));
                     break;                    
@@ -617,6 +631,18 @@ public class Service {
                     break;
             }
         }
+    }
+
+    public Task findTaskInChecklistByIndex(int index, Checklist checklist){
+        TreeSet<Task> tasks = checklist.getTasks();
+        int i = 1;
+        for(Task task : tasks){
+            if(i == index){
+                return task;
+            }
+            i++;
+        }
+        return null;
     }
 
     public Task findTaskByIndex(int index){

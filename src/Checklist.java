@@ -47,6 +47,7 @@ public class Checklist {
 
 
     public void addTask(Task task) {
+        task.setChecklistId(id);
         tasks.add(task);
     }
 

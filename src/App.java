@@ -7,6 +7,7 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
+        //TODO adaugat date mai bune pentru teste
         Person guest1 = new Guest("Doe", "John", "1234567890", InviteStatus.ATTENDING, Side.BRIDE, Role.MAID_OF_HONOR, Relationship.FAMILY);
         Person guest2 = new Guest("Doe", "Jane", "1234567890", InviteStatus.NOT_ATTENDING, Side.BRIDE, Role.NONE, Relationship.FRIEND);
         Person vendor1 = new Vendor("Doe", "Jane", "1234567890", "Email", 1234,"Catering", "Notes");
@@ -74,6 +75,7 @@ public class App {
                         input = service.guestsMenu();
                         switch (input) {
                             case 1:
+                                service.clearScreen();
                                 service.showGuests();
                                 service.waitForAnyKey();
                                 break;
@@ -81,10 +83,12 @@ public class App {
                                 service.addGuest();
                                 break;
                             case 3:
+                                service.clearScreen();
                                 service.showGuests();
                                 service.removeGuest(service.userInput());
                                 break;
                             case 4:
+                                service.clearScreen();
                                 service.showGuests();
                                 service.editGuest(service.userInput());
                                 break;
@@ -103,6 +107,7 @@ public class App {
                         input = service.tableMenu();
                         switch (input) {
                             case 1:
+                                service.clearScreen();
                                 service.showTables();
                                 service.waitForAnyKey();
                                 break;
@@ -110,10 +115,12 @@ public class App {
                                  service.addTable();
                                  break;
                             case 3:
+                                service.clearScreen();                        
                                 service.showTables();
                                 service.removeTable(service.userInput());
                                 break;
                             case 4:
+                                service.clearScreen();
                                 service.showTables();
                                 service.editTable(service.userInput());
                                 break;
@@ -122,12 +129,14 @@ public class App {
                         }
                         
                     }
+                    break;
                 case 4:
                     input = -1;
                     while (input != 5) {
                         input = service.vendorMenu();
                         switch (input) {
                             case 1:
+                                service.clearScreen();
                                 service.showVendors();
                                 service.waitForAnyKey();
                                 break;
@@ -135,10 +144,12 @@ public class App {
                                 service.addVendor();
                                 break;
                             case 3:
+                                service.clearScreen();
                                 service.showVendors();
                                 service.removeVendor(service.userInput());
                                 break;
                             case 4:
+                                service.clearScreen();
                                 service.showVendors();
                                 service.editVendor(service.userInput());
                                 break;
@@ -159,10 +170,12 @@ public class App {
                         input = service.tasksMenu();
                         switch (input) {
                             case 1:
+                                service.clearScreen();
                                 service.showAllTasks();
                                 service.waitForAnyKey();
                                 break;
                             case 2:
+                                service.clearScreen();
                                 service.showUnassignedTasks();
                                 service.waitForAnyKey();
                                 break;
@@ -170,10 +183,12 @@ public class App {
                                 service.addTask();
                                 break;
                             case 4:
+                                service.clearScreen();
                                 service.showAllTasks();
                                 service.removeTask(service.userInput());
                                 break;
                             case 5:
+                                service.clearScreen();
                                 service.showAllTasks();
                                 service.editTask(service.userInput());
                                 break;
@@ -181,12 +196,14 @@ public class App {
                                 break;
                         }
                     }
+                    break;
                 case 6:
                     input = -1;
                     while (input != 5) {
                         input = service.checklistMenu();
                         switch (input) {
                             case 1:
+                                service.clearScreen();
                                 service.showChecklists();
                                 service.waitForAnyKey();
                                 break;
@@ -194,10 +211,12 @@ public class App {
                                 service.addChecklist();
                                 break;
                             case 3:
+                                service.clearScreen();
                                 service.showChecklists();
                                 service.removeChecklist(service.userInput());
                                 break;
                             case 4:
+                                service.clearScreen();
                                 service.showChecklists();
                                 service.editChecklist(service.userInput());
                                 break;
@@ -205,6 +224,7 @@ public class App {
                                 break;
                         }
                     }
+                    break;
                 case 7:
                     service.exit();
                     break;
