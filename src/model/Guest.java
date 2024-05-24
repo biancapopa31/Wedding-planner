@@ -1,3 +1,4 @@
+package model;
 enum InviteStatus {
     ATTENDING,
     NOT_ATTENDING,

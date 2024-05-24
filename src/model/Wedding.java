@@ -1,3 +1,4 @@
+package model;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -8,8 +9,8 @@ public class Wedding {
 
     private Person bride = new Person();
     private Person groom = new Person();
-    private Person Godmother = new Person();
-    private Person Godfather = new Person();
+    private Person godmother = new Person();
+    private Person godfather = new Person();
     // TODO: Add other persons?
 
     private List<Guest> guests = new ArrayList<>();
@@ -54,19 +55,19 @@ public class Wedding {
     }
 
     public Person getGodmother() {
-        return Godmother;
+        return godmother;
     }
 
-    public void setGodmother(Person Godmother) {
-        this.Godmother = Godmother;
+    public void setGodmother(Person godmother) {
+        this.godmother = godmother;
     }
 
     public Person getGodfather() {
-        return Godfather;
+        return godfather;
     }
 
-    public void setGodfather(Person Godfather) {
-        this.Godfather = Godfather;
+    public void setGodfather(Person godfather) {
+        this.godfather = godfather;
     }
 
     public List<Guest> getGuests() {

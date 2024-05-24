@@ -41,7 +41,7 @@ pass
 
     - `Person` Bride
     - `Person` Groom
-    - `Person` Godmother
+    - `Person` godmother
     - `Person` Godfather
     - ...
     - `Table []` Tabels

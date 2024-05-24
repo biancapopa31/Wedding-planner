@@ -1,3 +1,4 @@
+package model;
 import java.util.TreeSet;
 
 public class Checklist {

@@ -1,10 +1,41 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Service {
+import model.Checklist;
+import model.Guest;
+import model.Person;
+import model.Table;
+import model.Task;
+import model.Vendor;
+import model.Wedding;
+import repository.IWeddingRepository;
+import repository.WeddingRepository;
 
-    Scanner scanner = new Scanner(System.in);
+public class Service {
+    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/wedding_planner";
+    private static final String DATABASE_USER = "root";
+    private static final String DATABASE_PASSWORD= "bia123";
+
+    private static Scanner scanner;
+
+    private static Connection connection;
+
+    private static IWeddingRepository weddingRepository;
+
+    public Service() {
+        try {
+            connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        scanner = new Scanner(System.in);
+        weddingRepository = new WeddingRepository(connection);
+
+    }
 
     public void clearScreen(){
         System.out.print("\033[H\033[2J");
@@ -40,17 +71,18 @@ public class Service {
         return userInput();
     }
 
-
     public int generalInformationMenu(){
         clearScreen();
         System.out.println("General wedding information");
 
-        System.out.println("Location: " + App.wedding.getLocation());
-        System.out.println("Date: " + App.wedding.getDate());
-        System.out.println("Bride: " + App.wedding.getBride());
-        System.out.println("Groom: " + App.wedding.getGroom());
-        System.out.println("Godmother: " + App.wedding.getGodmother());
-        System.out.println("Godfather: " + App.wedding.getGodfather());
+        Wedding wedding = weddingRepository.getWedding();
+
+        System.out.println("Location: " + wedding.getLocation());
+        System.out.println("Date: " + wedding.getDate());
+        System.out.println("Bride: " + wedding.getBride());
+        System.out.println("Groom: " + wedding.getGroom());
+        System.out.println("Godmother: " + wedding.getGodmother());
+        System.out.println("Godfather: " + wedding.getGodfather());
 
         System.out.println("\n\n1. Edit location");
         System.out.println("2. Edit date");
@@ -61,6 +93,31 @@ public class Service {
         System.out.println("7. Back to main menu");
 
         return userInput();
+    }
+
+    public void handleGeneralInformationMenu(int input){
+        switch (input) {
+            case 1:
+                editLocation();
+                break;
+            case 2:
+                editDate();
+                break;
+            case 3:
+                editPerson(App.wedding.getBride());
+                break;
+            case 4:
+                editPerson(App.wedding.getGroom());
+                break;
+            case 5:
+                editPerson(App.wedding.getGodmother());
+                break;
+            case 6:
+                editPerson(App.wedding.getGodfather());
+                break;
+            default:
+                break;
+        }
     }
 
     public int guestsMenu(){
@@ -594,16 +651,10 @@ public class Service {
                     clearScreen();
                     showGuests();
                     showVendors();
-                    System.out.println("Enter memeber type( 1. Guest, 2. Vendor): ");
-                    int memberType = scanner.nextInt();
                     System.out.print("Enter member index: ");
                     int newMemberIndex = scanner.nextInt();
                     Person newMember;
-                    if(memberType == 1)
-                        newMember = App.wedding.getGuests().get(newMemberIndex - 1);
-                    else
-                        newMember = App.wedding.getVendors().get(newMemberIndex - 1);
-
+                    newMember = App.wedding.getGuests().get(newMemberIndex - 1);
                     if(newMember.getTableNumber() != -1){
                         System.out.println("This person is already assigned to table " + newMember.getTableNumber());
                         System.out.println("Do you want change the table? (y/n)");

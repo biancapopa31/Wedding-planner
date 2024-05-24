@@ -1,3 +1,4 @@
+package model;
 public class Vendor extends Person{
     private String email;
     private double price;

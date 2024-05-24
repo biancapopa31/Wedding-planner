@@ -1,5 +1,13 @@
 import java.time.LocalDate;
 
+import model.Checklist;
+import model.Guest;
+import model.Person;
+import model.Table;
+import model.Task;
+import model.Vendor;
+import model.Wedding;
+
 //TODO Debugging!!!
 
 public class App {
@@ -7,35 +15,35 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
-        //TODO adaugat date mai bune pentru teste
-        Person guest1 = new Guest("Doe", "John", "1234567890", InviteStatus.ATTENDING, Side.BRIDE, Role.MAID_OF_HONOR, Relationship.FAMILY);
-        Person guest2 = new Guest("Doe", "Jane", "1234567890", InviteStatus.NOT_ATTENDING, Side.BRIDE, Role.NONE, Relationship.FRIEND);
-        Person vendor1 = new Vendor("Doe", "Jane", "1234567890", "Email", 1234,"Catering", "Notes");
+        // //TODO adaugat date mai bune pentru teste
+        // Person guest1 = new Guest("Doe", "John", "1234567890", InviteStatus.ATTENDING, Side.BRIDE, Role.MAID_OF_HONOR, Relationship.FAMILY);
+        // Person guest2 = new Guest("Doe", "Jane", "1234567890", InviteStatus.NOT_ATTENDING, Side.BRIDE, Role.NONE, Relationship.FRIEND);
+        // Person vendor1 = new Vendor("Doe", "Jane", "1234567890", "Email", 1234,"Catering", "Notes");
         
-        wedding.addGuest((Guest) guest1);
-        wedding.addGuest((Guest) guest2);
+        // wedding.addGuest((Guest) guest1);
+        // wedding.addGuest((Guest) guest2);
 
-        wedding.addVendor((Vendor) vendor1);
+        // wedding.addVendor((Vendor) vendor1);
         
-        Table table1 = new Table(1, 10);
-        table1.addMember(guest1);
+        // Table table1 = new Table(1, 10);
+        // table1.addMember(guest1);
 
-        wedding.addTable(table1);
+        // wedding.addTable(table1);
 
-        Task task1 = new Task("Task 1", "Description 1", LocalDate.now());
-        Task task2 = new Task("Task 2", "Description 2", LocalDate.now());
-        Task task3 = new Task("Task 3", "Description 3", LocalDate.now());
-        wedding.addTask(task1);
-        wedding.addTask(task2);
-        wedding.addTask(task3);
+        // Task task1 = new Task("Task 1", "Description 1", LocalDate.now());
+        // Task task2 = new Task("Task 2", "Description 2", LocalDate.now());
+        // Task task3 = new Task("Task 3", "Description 3", LocalDate.now());
+        // wedding.addTask(task1);
+        // wedding.addTask(task2);
+        // wedding.addTask(task3);
 
 
-        Checklist checklist1 = new Checklist("Checklist 1", "Description 1");
+        // Checklist checklist1 = new Checklist("Checklist 1", "Description 1");
         
 
         Service service = new Service();
-        service.addTaskToChecklist(task3, checklist1);
-        wedding.addChecklist(checklist1);
+        // service.addTaskToChecklist(task3, checklist1);
+        // wedding.addChecklist(checklist1);
         int mainInput = -1;
         while (mainInput != 7) {
             
@@ -45,28 +53,7 @@ public class App {
                     int input = -1;
                     while (input != 7) {
                         input = service.generalInformationMenu();
-                        switch (input) {
-                            case 1:
-                                service.editLocation();
-                                break;
-                            case 2:
-                                service.editDate();
-                                break;
-                            case 3:
-                                service.editPerson(wedding.getBride());
-                                break;
-                            case 4:
-                                service.editPerson(wedding.getGroom());
-                                break;
-                            case 5:
-                                service.editPerson(wedding.getGodmother());
-                                break;
-                            case 6:
-                                service.editPerson(wedding.getGodfather());
-                                break;
-                            default:
-                                break;
-                        }
+                        service.handleGeneralInformationMenu(input);
                     }
                     break;
                 case 2:
