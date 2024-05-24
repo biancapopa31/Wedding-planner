@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class Wedding {
+    private int id;
 
     private LocalDate date;
     private String location;

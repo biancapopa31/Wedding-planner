@@ -35,4 +35,17 @@ public class WeddingRepository implements IWeddingRepository{
         return wedding;
     }
 
+    @Override
+    public void updateWedding(model.Wedding wedding) {
+        String sqlStatement = "UPDATE wedding SET date = ?, location = ? where id = 1";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+            preparedStatement.setDate(1, Date.valueOf(wedding.getDate()));
+            preparedStatement.setString(2, wedding.getLocation());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

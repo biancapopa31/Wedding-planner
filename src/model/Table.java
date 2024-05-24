@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
+    private int id;
+
     private int tableNumber;
     private int capacity;
     private List<Person> members = new ArrayList<>();

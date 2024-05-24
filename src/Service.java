@@ -4,15 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import model.Checklist;
-import model.Guest;
-import model.Person;
-import model.Table;
-import model.Task;
-import model.Vendor;
-import model.Wedding;
-import repository.IWeddingRepository;
-import repository.WeddingRepository;
+import model.*;
+import repository.*;
 
 public class Service {
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/wedding_planner";
@@ -24,6 +17,7 @@ public class Service {
     private static Connection connection;
 
     private static IWeddingRepository weddingRepository;
+    private static IPersonRepository personRepository;
 
     public Service() {
         try {
@@ -34,6 +28,8 @@ public class Service {
 
         scanner = new Scanner(System.in);
         weddingRepository = new WeddingRepository(connection);
+        personRepository = new PersonRepository(connection);
+
 
     }
 
@@ -96,24 +92,25 @@ public class Service {
     }
 
     public void handleGeneralInformationMenu(int input){
+        Wedding wedding = weddingRepository.getWedding();
         switch (input) {
             case 1:
-                editLocation();
+                editLocation(wedding);
                 break;
             case 2:
-                editDate();
+                editDate(wedding);
                 break;
             case 3:
-                editPerson(App.wedding.getBride());
+                editPerson(wedding.getBride());
                 break;
             case 4:
-                editPerson(App.wedding.getGroom());
+                editPerson(wedding.getGroom());
                 break;
             case 5:
-                editPerson(App.wedding.getGodmother());
+                editPerson(wedding.getGodmother());
                 break;
             case 6:
-                editPerson(App.wedding.getGodfather());
+                editPerson(wedding.getGodfather());
                 break;
             default:
                 break;
@@ -779,26 +776,32 @@ public class Service {
                     break;
             }
         }
+        personRepository.updatePerson(person);
     }
 
-    public void editLocation(){
+    public void editLocation(Wedding wedding){
         clearScreen();
         System.out.println("Edit location");
-        System.out.println("Current location: " + App.wedding.getLocation());
+        System.out.println("Current location: " + wedding.getLocation());
         System.out.print("Enter new location: ");
-        App.wedding.setLocation(scanner.next());
+        scanner.nextLine();
+        wedding.setLocation(scanner.nextLine());
+        
+        weddingRepository.updateWedding(wedding);
     }
 
-    public void editDate(){
+    public void editDate(Wedding wedding){
         clearScreen();
         System.out.println("Edit date");
-        System.out.println("Current date: " + App.wedding.getDate());
+        System.out.println("Current date: " + wedding.getDate());
         System.out.println("Date format: YYYY-MM-DD");
         System.out.print("Enter new date: ");
         String date = scanner.next();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        App.wedding.setDate(LocalDate.parse(date, formatter));
+        wedding.setDate(LocalDate.parse(date, formatter));
+
+        weddingRepository.updateWedding(wedding);
 
     }
 }

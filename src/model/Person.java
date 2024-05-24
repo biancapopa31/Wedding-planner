@@ -1,5 +1,6 @@
 package model;
 public class Person {
+    private int id;
     private String lastName;
     private String firstName;
     private String telephone;
@@ -37,6 +38,14 @@ public class Person {
 
     public String getTelephone() {
         return telephone;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setLastName(String lastName) {
