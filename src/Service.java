@@ -67,9 +67,7 @@ public class Service {
         System.out.println("2. Guests");
         System.out.println("3. Tables");
         System.out.println("4. Vendors");
-        System.out.println("5. Tasks");
-        System.out.println("6. Checklists");
-        System.out.println("7. Exit");
+        System.out.println("5. Exit");
 
         return userInput();
     }
@@ -162,77 +160,6 @@ public class Service {
         return userInput();
     }
 
-    public int tasksMenu(){
-        clearScreen();
-        System.out.println("Tasks menu");
-        System.out.println("Number of  tasks: " + App.wedding.getTasks().size());
-
-        System.out.println("\n\n1. Show all tasks");
-        System.out.println("2. Show unassigned task");
-        System.out.println("3. Add task");
-        System.out.println("4. Remove task");
-        System.out.println("5. Edit task");
-        System.out.println("6. Back to main menu");
-
-        return userInput();
-    }
-
-    public int checklistMenu(){
-        clearScreen();
-        System.out.println("Checklist menu");
-        System.out.println("\n\n1. Show checklists");
-        System.out.println("2. Add checklist");
-        System.out.println("3. Remove checklist");
-        System.out.println("4. Edit checklist");
-        System.out.println("5. Back to main menu");
-
-        return userInput();
-    }
-
-    public void showChecklists(){
-        System.out.println("Checklists");
-        List<Checklist> checklists = App.wedding.getChecklists();
-        int n = checklists.size();
-
-        for (int i = 0; i < n; i++) {
-            System.out.println(i+1 + ". " + checklists.get(i) + "\n");
-        }
-    }
-
-    public void showTasksInChecklist(Checklist checklist){
-        TreeSet<Task> tasks = checklist.getTasks();
-        int i = 1;
-
-        for (Task task : tasks) {
-            System.out.println(i + ". " + task + "\n");
-            i++;
-        }
-    }
-
-    public void showAllTasks(){
-        System.out.println("All tasks");
-        Set<Task> tasks = App.wedding.getTasks();
-        int i = 1;
-
-        for (Task task : tasks) {
-            System.out.println(i  + ". " + task + "\n");
-            i++;
-        }
-    }
-
-    public void showUnassignedTasks(){
-        System.out.println("Unassigned tasks");
-        Set<Task> tasks = App.wedding.getTasks();
-        int i = 1;
-
-        for (Task task : tasks) {
-            if(task.getChecklistId() == -1){
-                System.out.println(i  + ". " + task + "\n");
-                i++;
-            }
-        }
-    }
-
     public void showVendors(){
         System.out.println("Vendor list");
         List<Vendor> vendors = vendorRepository.getAll();
@@ -268,40 +195,6 @@ public class Service {
         for (int i = 0; i < n; i++) {
             System.out.println(i + 1 + ". " + guests.get(i) + "\n");
         }
-    }
-
-    public void addChecklist(){
-        clearScreen();
-        System.out.println("Add checklist");
-        System.out.print("Enter checklist name: ");
-        scanner.nextLine();
-        String name = scanner.nextLine();
-        System.out.print("Enter checklist description: ");
-        String description = scanner.nextLine();
-
-        Checklist newChecklist = new Checklist(name, description);
-
-        App.wedding.addChecklist(newChecklist);
-    }
-
-    public void addTaskToChecklist(Task task, Checklist checklist) {
-        task.setChecklistId(checklist.getId());
-        checklist.addTask(task);
-    }
-
-    public void addTask(){
-        clearScreen();
-        System.out.println("Add task");
-        System.out.print("Enter task name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter task description: ");
-        String description = scanner.nextLine();
-        System.out.print("Enter due date (Date format: yyyy-mm-dd): ");
-        String dueDate = scanner.next();
-
-        Task newTask = new Task(name, description, LocalDate.parse(dueDate));
-
-        App.wedding.addTask(newTask);
     }
 
     public void addVendor(){
@@ -372,20 +265,6 @@ public class Service {
         return newPerson;
     }
 
-    public void removeChecklist(int index){
-        clearScreen();
-        Checklist checklist = App.wedding.getChecklists().get(index - 1);
-        checklist.clearChecklist();
-
-        App.wedding.removeChecklist(index - 1);
-    }
-
-    public void removeTask(int index){
-        clearScreen();
-        App.wedding.removeTask(findTaskByIndex(index));
-        //TODO: Remove task from checklist
-    }
-
     public void removeVendor(int index){
         clearScreen();
         Vendor vendor = vendorRepository.getAll().get(index - 1);
@@ -411,102 +290,6 @@ public class Service {
         }
     }
 
-    public void editChecklist(int index){
-        clearScreen();
-        Checklist checklist = App.wedding.getChecklists().get(index - 1);
-
-        int input = -1;
-        while (input != 4) {
-            clearScreen();
-            System.out.println("Edit checklist");
-            System.out.println(checklist);
-
-            System.out.println("\n\n1. Edit name");
-            System.out.println("2. Edit description");
-            System.out.println("3. Add task");
-            System.out.println("4. Remove task");
-            System.out.println("5. Clear checklist");
-            System.out.println("6. Back");
-            input = userInput();
-
-            switch (input) {
-                case 1:
-                    System.out.print("Enter new name: ");
-                    scanner.nextLine();
-                    checklist.setName(scanner.nextLine());
-                    break;
-                case 2:
-                    System.out.print("Enter new description: ");
-                    scanner.nextLine();
-                    checklist.setDescription(scanner.nextLine());
-                    break;
-                case 3:
-                    showAllTasks();
-                    System.out.print("Enter task index: ");
-                    Task task = findTaskByIndex(scanner.nextInt());
-                    if (task.getChecklistId() != -1){
-                        System.out.println("Task is already assigned to a checklist");
-                        waitForAnyKey();
-                    }
-                    else
-                        //addTaskToChecklist(task, checklist);
-                        checklist.addTask(task);
-                    break;
-                case 4:
-                    clearScreen();
-                    showTasksInChecklist(checklist);
-                    System.out.print("Enter task index: ");
-                    checklist.removeTask(findTaskInChecklistByIndex(scanner.nextInt(), checklist));
-                    break;
-                case 5:
-                    checklist.clearChecklist();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    public void editTask(int index){
-        clearScreen();
-        Task task = findTaskByIndex(index);
-
-        int input = -1;
-        while (input != 5) {
-            clearScreen();
-            System.out.println("Edit task");
-            System.out.println(task);
-
-            System.out.println("\n\n1. Edit name");
-            System.out.println("2. Edit description");
-            System.out.println("3. Edit due date");
-            System.out.println("4. Change completion status");
-            System.out.println("5. Back");
-            input = userInput();
-
-            switch (input) {
-                case 1:
-                    System.out.print("Enter new name: ");
-                    scanner.nextLine();
-                    task.setName(scanner.nextLine());
-                    break;
-                case 2:
-                    System.out.print("Enter new description: ");
-                    scanner.nextLine();
-                    task.setDescription(scanner.nextLine());
-                    break;
-                case 3:
-                    System.out.print("Enter new due date: ");
-                    task.setDueDate(LocalDate.parse(scanner.next()));
-                    break;
-                case 4:
-                    task.setComplete(!task.isComplete());
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 
     public void editVendor(int index){
         clearScreen();
@@ -701,42 +484,6 @@ public class Service {
             }
         }
         tableRepository.update(table);
-    }
-
-    public Task findTaskInChecklistByIndex(int index, Checklist checklist){
-        TreeSet<Task> tasks = checklist.getTasks();
-        int i = 1;
-        for(Task task : tasks){
-            if(i == index){
-                return task;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    public Task findTaskByIndex(int index){
-        Set<Task> tasks = App.wedding.getTasks();
-        int i = 1;
-        for(Task task : tasks){
-            if(i == index){
-                return task;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    //TODO: delete this
-    public Table findTable(int index){
-        List<Table> tables = App.wedding.getTables();
-        int n = tables.size();
-        for(int i = 0; i < n; i++){
-            if(tables.get(i).getTableNumber() == index){
-                return tables.get(i);
-            }
-        }
-        return null;
     }
 
     public void findGuestFromName(){

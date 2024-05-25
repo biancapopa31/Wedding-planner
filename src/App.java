@@ -1,10 +1,8 @@
 import java.time.LocalDate;
 
-import model.Checklist;
 import model.Guest;
 import model.Person;
 import model.Table;
-import model.Task;
 import model.Vendor;
 import model.Wedding;
 
@@ -152,67 +150,6 @@ public class App {
                     }
                     break;
                 case 5:
-                    input = -1;
-                    while (input != 6) {
-                        input = service.tasksMenu();
-                        switch (input) {
-                            case 1:
-                                service.clearScreen();
-                                service.showAllTasks();
-                                service.waitForAnyKey();
-                                break;
-                            case 2:
-                                service.clearScreen();
-                                service.showUnassignedTasks();
-                                service.waitForAnyKey();
-                                break;
-                            case 3:
-                                service.addTask();
-                                break;
-                            case 4:
-                                service.clearScreen();
-                                service.showAllTasks();
-                                service.removeTask(service.userInput());
-                                break;
-                            case 5:
-                                service.clearScreen();
-                                service.showAllTasks();
-                                service.editTask(service.userInput());
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    break;
-                case 6:
-                    input = -1;
-                    while (input != 5) {
-                        input = service.checklistMenu();
-                        switch (input) {
-                            case 1:
-                                service.clearScreen();
-                                service.showChecklists();
-                                service.waitForAnyKey();
-                                break;
-                            case 2:
-                                service.addChecklist();
-                                break;
-                            case 3:
-                                service.clearScreen();
-                                service.showChecklists();
-                                service.removeChecklist(service.userInput());
-                                break;
-                            case 4:
-                                service.clearScreen();
-                                service.showChecklists();
-                                service.editChecklist(service.userInput());
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    break;
-                case 7:
                     service.exit();
                     break;
 
