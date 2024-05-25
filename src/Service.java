@@ -19,6 +19,7 @@ public class Service {
     private static IWeddingRepository weddingRepository;
     private static IPersonRepository<Person> personRepository;
     private static IPersonRepository<Guest> guestRepository;
+    private static IPersonRepository<Vendor> vendorRepository;
 
     public Service() {
         try {
@@ -31,6 +32,7 @@ public class Service {
         weddingRepository = new WeddingRepository(connection);
         personRepository = new PersonRepository(connection);
         guestRepository = new GuestRepository(connection);
+        vendorRepository = new VendorRepository(connection);
 
     }
 
@@ -134,7 +136,6 @@ public class Service {
     public int tableMenu(){
         clearScreen();
         System.out.println("Table menu");
-        System.out.println("Number of tables: " + App.wedding.getTables().size());
         System.out.println("\n\n1. Show tables");
         System.out.println("2. Add table");
         System.out.println("3. Remove table");
@@ -148,7 +149,6 @@ public class Service {
     public int vendorMenu(){
         clearScreen();
         System.out.println("Vendor menu");
-        System.out.println("Number of vendors: " + App.wedding.getVendors().size());
         System.out.println("\n\n1. Show vendors");
         System.out.println("2. Add vendor");
         System.out.println("3. Remove vendor");
@@ -232,8 +232,10 @@ public class Service {
 
     public void showVendors(){
         System.out.println("Vendor list");
-        List<Vendor> vendors = App.wedding.getVendors();
+        List<Vendor> vendors = vendorRepository.getAll();
         int n = vendors.size();
+        System.out.println("Number of vendors: " + n);
+
 
         for (int i = 0; i < n; i++) {
             System.out.println(i + 1 + ". " + vendors.get(i) + "\n");
@@ -244,6 +246,9 @@ public class Service {
         System.out.println("Table list");
         List<Table> tables = App.wedding.getTables();
         int n = tables.size();
+
+        System.out.println("Number of tables: " + n);
+
 
         for (int i = 0; i < n; i++) {
             System.out.println(tables.get(i)+"\n");
@@ -305,13 +310,14 @@ public class Service {
         System.out.print("Enter price: ");
         double price = scanner.nextDouble();
         System.out.print("Enter service type: ");
+        scanner.nextLine();
         String serviceType = scanner.nextLine();
         System.out.print("Enter notes: ");
         String notes = scanner.nextLine();
 
         Vendor newVendor = new Vendor(newPerson, email, price, serviceType, notes);
 
-        App.wedding.addVendor(newVendor);
+        vendorRepository.add(newVendor);
     }
 
     public void addTable(){
@@ -374,8 +380,8 @@ public class Service {
 
     public void removeVendor(int index){
         clearScreen();
-        App.wedding.removeVendor(index - 1);
-        //TODO: Remove vendor from table
+        Vendor vendor = vendorRepository.getAll().get(index - 1);
+        vendorRepository.delete(vendor);
     }
 
     public void removeGuest(int index){
@@ -495,10 +501,10 @@ public class Service {
 
     public void editVendor(int index){
         clearScreen();
-        Vendor vendor = App.wedding.getVendors().get(index - 1);
+        Vendor vendor = vendorRepository.getAll().get(index - 1);
 
         int input = -1;
-        while (input != 5) {
+        while (input != 8) {
             clearScreen();
             System.out.println("Edit vendor");
             System.out.println(vendor);
@@ -548,6 +554,7 @@ public class Service {
                     break;
             }
         }
+        vendorRepository.update(vendor);
     }
 
     public void editGuest(int index){

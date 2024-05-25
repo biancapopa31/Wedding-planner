@@ -8,7 +8,7 @@ import model.Guest;
 
 public class GuestRepository implements IPersonRepository<model.Guest> {
 
-    IPersonRepository<model.Person> personRepository;
+    private final IPersonRepository<model.Person> personRepository;
 
     private final Connection connection;
 

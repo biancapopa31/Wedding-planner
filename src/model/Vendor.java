@@ -28,6 +28,10 @@ public class Vendor extends Person{
         this.notes = notes;
     }
 
+    public Vendor() {
+        super();
+    }
+
     public String getEmail() {
         return email;
     }
@@ -62,7 +66,7 @@ public class Vendor extends Person{
 
     @Override
     public String toString() {
-        return "Contact person: "+ super.toString() + "\nEmail: " + email + "\nPrice: " + price + " " + serviceType + "\nNotes: " + notes;
+        return "Contact person: "+ super.toString() + "\nEmail: " + email + "\nPrice: " + price + "\nService: " + serviceType + "\nNotes: " + notes;
     }
 
     
