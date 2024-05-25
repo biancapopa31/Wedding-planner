@@ -1,27 +1,11 @@
 package model;
-enum InviteStatus {
-    ATTENDING,
-    NOT_ATTENDING,
-    SENT,
-    NOT_SENT
-}
 
-enum Relationship {
-    FAMILY, 
-    FRIEND,
-    OTHER
-}
+import enums.InviteStatus;
+import enums.Relationship;
+import enums.Side;
+import enums.Role;
 
-enum Side{
-    BRIDE,
-    GROOM
-}
-
-enum Role {
-    MAID_OF_HONOR,
-    BEST_MAN,
-    NONE
-}
+  
 
 public class Guest extends Person{
     private InviteStatus inviteStatus;
@@ -53,6 +37,10 @@ public class Guest extends Person{
         this.relationship = Relationship.values()[relationship];
     }
 
+    public Guest(){
+        super();
+    }
+
     public InviteStatus getInviteStatus() {
         return inviteStatus;
     }
@@ -72,8 +60,13 @@ public class Guest extends Person{
     public void setInviteStatus(InviteStatus inviteStatus) {
         this.inviteStatus = inviteStatus;
     }
+
     public void setInviteStatus(int inviteStatus) {
         this.inviteStatus = InviteStatus.values()[inviteStatus];
+    }
+
+    public void setInviteStatus(String inviteStatus) {
+        this.inviteStatus = InviteStatus.valueOf(inviteStatus);
     }
 
     public void setSide(Side side) {
@@ -81,6 +74,10 @@ public class Guest extends Person{
     }
     public void setSide(int side) {
         this.side = Side.values()[side];
+    }
+
+    public void setSide(String side) {
+        this.side = Side.valueOf(side);
     }
 
     public void setRole(Role role) {
@@ -91,12 +88,20 @@ public class Guest extends Person{
         this.role = Role.values()[role];
     }
 
+    public void setRole(String role) {
+        this.role = Role.valueOf(role);
+    }
+
     public void setRelationship(Relationship relationship) {
         this.relationship = relationship;
     }
 
     public void setRelationship(int relationship) {
         this.relationship = Relationship.values()[relationship];
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = Relationship.valueOf(relationship);
     }
 
     @Override

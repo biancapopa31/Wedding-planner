@@ -17,7 +17,8 @@ public class Service {
     private static Connection connection;
 
     private static IWeddingRepository weddingRepository;
-    private static IPersonRepository personRepository;
+    private static IPersonRepository<Person> personRepository;
+    private static IPersonRepository<Guest> guestRepository;
 
     public Service() {
         try {
@@ -29,7 +30,7 @@ public class Service {
         scanner = new Scanner(System.in);
         weddingRepository = new WeddingRepository(connection);
         personRepository = new PersonRepository(connection);
-
+        guestRepository = new GuestRepository(connection);
 
     }
 
@@ -120,7 +121,6 @@ public class Service {
     public int guestsMenu(){
         clearScreen();
         System.out.println("Guest menu");
-        System.out.println("Number of guests: " + App.wedding.getGuests().size());
         System.out.println("\n\n1. Show guests");
         System.out.println("2. Add guest");
         System.out.println("3. Remove guest");
@@ -252,8 +252,10 @@ public class Service {
 
     public void showGuests(){
         System.out.println("Guest list");
-        List<Guest> guests = App.wedding.getGuests();
+        List<Guest> guests = guestRepository.getAll();
         int n = guests.size();
+
+        System.out.println("Number of guests: " + n);
 
         for (int i = 0; i < n; i++) {
             System.out.println(i + 1 + ". " + guests.get(i) + "\n");
@@ -340,7 +342,7 @@ public class Service {
 
         Guest newGuest = new Guest(newPerson, inviteStatus, side, role, relationship);
 
-        App.wedding.addGuest(newGuest);
+        guestRepository.add(newGuest);
     }
 
     public Person createPersonFromUserInput(){
@@ -378,7 +380,8 @@ public class Service {
 
     public void removeGuest(int index){
         clearScreen();
-        App.wedding.removeGuest(index - 1);
+        Guest guest = guestRepository.getAll().get(index - 1);
+        guestRepository.delete(guest);
         //TODO: Remove guest from table
     }
 
@@ -549,7 +552,7 @@ public class Service {
 
     public void editGuest(int index){
         clearScreen();
-        Guest guest = App.wedding.getGuests().get(index - 1);
+        Guest guest = guestRepository.getAll().get(index - 1);
 
         int input = -1;
         while (input != 8) {
@@ -600,6 +603,7 @@ public class Service {
                     break;
             }
         }
+        guestRepository.update(guest);
     }
 
     public void editTable(int index){
@@ -724,7 +728,7 @@ public class Service {
         System.out.print("Enter first name or -: ");
         String firstName = scanner.next().toLowerCase();
 
-        List<Guest> guests = App.wedding.getGuests();
+        List<Guest> guests = guestRepository.getAll();
         int n = guests.size();
         boolean found = false;
 

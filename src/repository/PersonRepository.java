@@ -1,7 +1,7 @@
 package repository;
 
 import java.sql.*;
-
+import java.util.List;
 
 import model.Person;
 
@@ -35,7 +35,8 @@ public class PersonRepository implements IPersonRepository<Person>{
     }
 
     @Override
-    public void add(Person person) {
+    public int add(Person person) {
+        int id = 0;
         String sqlStatement = "INSERT INTO person (lastName, firstName, telephone) VALUES (?, ?, ?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
@@ -43,9 +44,18 @@ public class PersonRepository implements IPersonRepository<Person>{
             preparedStatement.setString(2, person.getFirstName());
             preparedStatement.setString(3, person.getTelephone());
             preparedStatement.executeUpdate();
+
+            PreparedStatement idStatement = connection.prepareStatement("SELECT LAST_INSERT_ID()");
+            ResultSet idResult = idStatement.executeQuery();
+
+            if (idResult.next()) {
+                long newPersonId = idResult.getLong(1);
+                id = (int) newPersonId;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return id;
     }
 
     @Override
@@ -60,6 +70,23 @@ public class PersonRepository implements IPersonRepository<Person>{
             preparedStatement.setInt(4, person.getId());
             preparedStatement.executeUpdate();
           
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Person> getAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+    }
+
+	@Override
+	public void delete(Person person) {
+        String sqlStatement = "DELETE FROM person WHERE id = " + person.getId();
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sqlStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
