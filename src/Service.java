@@ -10,6 +10,9 @@ import model.*;
 import repository.*;
 
 public class Service {
+
+    private static Service instance;
+
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/wedding_planner";
     private static final String DATABASE_USER = "root";
     private static final String DATABASE_PASSWORD= "bia123";
@@ -24,7 +27,7 @@ public class Service {
     private static IPersonRepository<Vendor> vendorRepository;
     private static ITableRepository tableRepository;
 
-    public Service() {
+    private Service() {
         try {
             connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
         } catch (Exception e) {
@@ -38,6 +41,13 @@ public class Service {
         vendorRepository = new VendorRepository(connection);
         tableRepository = new TableRepository(connection);
 
+    }
+
+    public static Service getInstance() {
+        if (instance == null) {
+            instance = new Service();
+        }
+        return instance;
     }
 
     public void clearScreen(){
