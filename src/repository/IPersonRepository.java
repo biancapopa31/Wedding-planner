@@ -1,13 +1,12 @@
 package repository;
 
-import model.Person;
 
-public interface IPersonRepository {
+public interface IPersonRepository <T> {
 
-    Person getPersonById(int id);
+    T getById(int id);
 
-    void addPerson(Person person);
+    void add(T person);
 
-    void updatePerson(Person person);
+    void update(T person);
 
 }

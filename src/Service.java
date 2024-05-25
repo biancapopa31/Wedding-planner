@@ -776,7 +776,7 @@ public class Service {
                     break;
             }
         }
-        personRepository.updatePerson(person);
+        personRepository.update(person);
     }
 
     public void editLocation(Wedding wedding){

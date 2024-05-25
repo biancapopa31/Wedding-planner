@@ -5,7 +5,7 @@ import java.sql.*;
 
 import model.Person;
 
-public class PersonRepository implements IPersonRepository{
+public class PersonRepository implements IPersonRepository<Person>{
 
     private final Connection connection;
 
@@ -14,7 +14,7 @@ public class PersonRepository implements IPersonRepository{
     }
 
     @Override
-    public Person getPersonById(int id) {
+    public Person getById(int id) {
         Person person = new Person();
 
         String sqlStatement = "SELECT * FROM person WHERE id = " + id;
@@ -35,13 +35,21 @@ public class PersonRepository implements IPersonRepository{
     }
 
     @Override
-    public void addPerson(Person person) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addPerson'");
+    public void add(Person person) {
+        String sqlStatement = "INSERT INTO person (lastName, firstName, telephone) VALUES (?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+            preparedStatement.setString(1, person.getLastName());
+            preparedStatement.setString(2, person.getFirstName());
+            preparedStatement.setString(3, person.getTelephone());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void updatePerson(Person person) {
+    public void update(Person person) {
 
         String sqlStatement = "UPDATE person SET lastName = ?, firstName = ?, telephone = ? WHERE id = ?";
         try {
