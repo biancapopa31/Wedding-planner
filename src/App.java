@@ -90,7 +90,7 @@ public class App {
                     break;
                 case 3:
                     input = -1;
-                    while (input != 6 ) {
+                    while (input != 5 ) {
                         input = service.tableMenu();
                         switch (input) {
                             case 1:

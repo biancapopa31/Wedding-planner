@@ -28,6 +28,10 @@ public class Vendor extends Person{
         this.notes = notes;
     }
 
+    public Vendor(Person person){
+        super(person);
+    }
+
     public Vendor() {
         super();
     }

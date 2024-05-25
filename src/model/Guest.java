@@ -37,6 +37,10 @@ public class Guest extends Person{
         this.relationship = Relationship.values()[relationship];
     }
 
+    public Guest(Person person){
+        super(person);
+    }
+
     public Guest(){
         super();
     }

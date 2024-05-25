@@ -19,15 +19,13 @@ public class GuestRepository implements IPersonRepository<model.Guest> {
 
     @Override
     public Guest getById(int id) {
-        Guest guest = new Guest();
-        guest = (Guest) personRepository.getById(id);
+        Guest guest = new Guest(personRepository.getById(id));
 
         String sqlStatement = "SELECT * FROM guest WHERE id = " + id;
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlStatement);
             while (resultSet.next()) {
-                guest.setTableNumber(resultSet.getInt("tableNumber"));
                 guest.setInviteStatus(resultSet.getString("invite_status"));
                 guest.setRole(resultSet.getString("role"));
                 guest.setSide(resultSet.getString("side"));
@@ -87,12 +85,6 @@ public class GuestRepository implements IPersonRepository<model.Guest> {
             preparedStatement.setString(4, person.getSide().toString());
             preparedStatement.setString(5, person.getRelationship().toString());
             preparedStatement.executeUpdate();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

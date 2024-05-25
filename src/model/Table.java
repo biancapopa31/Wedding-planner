@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-    private int id;
 
     private int tableNumber;
     private int capacity;
@@ -21,6 +20,10 @@ public class Table {
     public Table(int tableNumber, int capacity) {
         this.tableNumber = tableNumber;
         this.capacity = capacity;
+    }
+
+    public Table(){
+
     }
 
     public int getTableNumber() {
@@ -56,15 +59,13 @@ public class Table {
     }
 
     public void removeMember(Person guest) {
-        guest.setTableNumber(-1);
-        members.remove(guest);
+        guest.setTableNumber(0);
     }
 
     public void clearTable() {
         for (Person guest : members) {
-            guest.setTableNumber(-1);
+            guest.setTableNumber(0);
         }
-        members.clear();
     }
 
     public boolean isFull() {

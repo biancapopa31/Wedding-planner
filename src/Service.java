@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import exceptions.TableDoesntExistException;
+import exceptions.TableExistsException;
 import model.*;
 import repository.*;
 
@@ -20,6 +22,7 @@ public class Service {
     private static IPersonRepository<Person> personRepository;
     private static IPersonRepository<Guest> guestRepository;
     private static IPersonRepository<Vendor> vendorRepository;
+    private static ITableRepository tableRepository;
 
     public Service() {
         try {
@@ -33,6 +36,7 @@ public class Service {
         personRepository = new PersonRepository(connection);
         guestRepository = new GuestRepository(connection);
         vendorRepository = new VendorRepository(connection);
+        tableRepository = new TableRepository(connection);
 
     }
 
@@ -140,8 +144,7 @@ public class Service {
         System.out.println("2. Add table");
         System.out.println("3. Remove table");
         System.out.println("4. Edit table");
-        System.out.println("5. Find table");
-        System.out.println("6. Back to main menu");
+        System.out.println("5. Back to main menu");
 
         return userInput();
     }
@@ -244,7 +247,7 @@ public class Service {
 
     public void showTables(){
         System.out.println("Table list");
-        List<Table> tables = App.wedding.getTables();
+        List<Table> tables = tableRepository.getAll();
         int n = tables.size();
 
         System.out.println("Number of tables: " + n);
@@ -330,7 +333,12 @@ public class Service {
 
         Table newTable = new Table(tableNumber, capacity);
 
-        App.wedding.addTable(newTable);
+        try{
+            tableRepository.add(newTable);
+        }catch(TableExistsException e){
+            System.out.println(e.getMessage());
+            waitForAnyKey();
+        }
     }
 
     public void addGuest(){
@@ -394,12 +402,13 @@ public class Service {
 
     public void removeTable(int index){
         clearScreen();
-
-        Table table = findTable(index);
-
-        table.clearTable();
-        
-        App.wedding.removeTable(table);
+        try{
+            Table table = tableRepository.get(index);
+            tableRepository.delete(table);
+        }catch(TableDoesntExistException e){
+            System.out.println(e.getMessage());
+            waitForAnyKey();
+        }
     }
 
     public void editChecklist(int index){
@@ -615,60 +624,63 @@ public class Service {
 
     public void editTable(int index){
         clearScreen();
-        Table table = findTable(index);
+        Table table = new Table();
+        try{
+            table = tableRepository.get(index);
+        }catch(TableDoesntExistException e){
+            System.out.println(e.getMessage());
+            waitForAnyKey();
+            return;
+        }
         List<Person> members = table.getmembers();
 
         int input = -1;
-        while (input != 3) {
+        while (input != 5) {
             clearScreen();
             System.out.println("Edit table");
             System.out.println(table);
 
-            System.out.println("\n\n1. Edit table number");
-            System.out.println("2. Edit capacity");
-            System.out.println("3. Add member");
-            System.out.println("4. Remove member");
-            System.out.println("5. Clear table");
-            System.out.println("6. Back to main menu");
+            System.out.println("\n\n1. Edit capacity");
+            System.out.println("2. Add member");
+            System.out.println("3. Remove member");
+            System.out.println("4. Clear table");
+            System.out.println("5. Back to main menu");
             input = userInput();
+
+            // TODO: verify if the new capacity is greater than the number of members
 
             switch (input) {
                 case 1:
-                    System.out.print("Enter new table number: ");
-                    int newTableNumber = scanner.nextInt();
-                    if (findTable(newTableNumber) != null) {
-                        System.out.println("Table number already exists");
-                        break;
-                    }
-                    table.setTableNumber(newTableNumber);
-                    break;
-                case 2:
                     System.out.print("Enter new capacity: ");
                     int newCapacity = scanner.nextInt();
-                    if(newCapacity < members.size()){
-                        System.out.println("New capacity is less than the number of members in the table");
-                        break;
-                    }
                     table.setCapacity(newCapacity);
                     break;
-                case 3:
+                case 2:
                     if(table.isFull()){
                         System.out.println("Table is full");
+                        waitForAnyKey();
                         break;
                     }
                     clearScreen();
-                    showGuests();
-                    showVendors();
+                    System.out.println("Enter memeber type (1. Guest, 2. Vendor): ");
+                    int memberType = scanner.nextInt();
+
+                    if(memberType == 1)
+                        showGuests();
+                    else
+                        showVendors();
                     System.out.print("Enter member index: ");
                     int newMemberIndex = scanner.nextInt();
                     Person newMember;
-                    newMember = App.wedding.getGuests().get(newMemberIndex - 1);
-                    if(newMember.getTableNumber() != -1){
+                    if(memberType == 1)
+                        newMember = guestRepository.getAll().get(newMemberIndex - 1);
+                    else
+                        newMember = vendorRepository.getAll().get(newMemberIndex - 1);
+                    if(newMember.getTableNumber() != 0){
                         System.out.println("This person is already assigned to table " + newMember.getTableNumber());
                         System.out.println("Do you want change the table? (y/n)");
                         String changeTable = scanner.next();
                         if(changeTable.equals("y")){
-                            findTable(newMember.getTableNumber()).removeMember(newMember);
                             table.addMember(newMember);
                         } else {
                             break;
@@ -676,20 +688,19 @@ public class Service {
                     }else{
                         table.addMember(newMember);
                     }
-                   
                     break;
-                case 4:
-                    //TODO verif ca se sterge corect
+                case 3:
                     System.out.print("Enter member index: ");
                     table.removeMember(members.get(scanner.nextInt() - 1));
                     break;                    
-                case 5:
+                case 4:
                     table.clearTable();
                     break;
                 default:
                     break;
             }
         }
+        tableRepository.update(table);
     }
 
     public Task findTaskInChecklistByIndex(int index, Checklist checklist){
@@ -716,6 +727,7 @@ public class Service {
         return null;
     }
 
+    //TODO: delete this
     public Table findTable(int index){
         List<Table> tables = App.wedding.getTables();
         int n = tables.size();

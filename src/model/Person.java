@@ -5,7 +5,7 @@ public class Person {
     private String firstName;
     private String telephone;
 
-    private int tableNumber = -1;
+    private int tableNumber = 0;
     
 
     public Person(String lastName, String firstName, String telephone) {

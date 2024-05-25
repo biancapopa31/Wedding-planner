@@ -1,6 +1,7 @@
 package repository;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Person;
@@ -26,6 +27,7 @@ public class PersonRepository implements IPersonRepository<Person>{
                 person.setLastName(resultSet.getString("lastName"));
                 person.setFirstName(resultSet.getString("firstName"));
                 person.setTelephone(resultSet.getString("telephone"));
+                person.setTableNumber(resultSet.getInt("table_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,12 +39,18 @@ public class PersonRepository implements IPersonRepository<Person>{
     @Override
     public int add(Person person) {
         int id = 0;
-        String sqlStatement = "INSERT INTO person (lastName, firstName, telephone) VALUES (?, ?, ?)";
+        String sqlStatement;
+        if (person.getTableNumber() == 0){
+            sqlStatement = "INSERT INTO person (lastName, firstName, telephone) VALUES (?, ?, ?)";
+        }else
+            sqlStatement = "INSERT INTO person (lastName, firstName, telephone, table_id) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setString(1, person.getLastName());
             preparedStatement.setString(2, person.getFirstName());
             preparedStatement.setString(3, person.getTelephone());
+            if (person.getTableNumber() != 0)
+                preparedStatement.setInt(4, person.getTableNumber());
             preparedStatement.executeUpdate();
 
             PreparedStatement idStatement = connection.prepareStatement("SELECT LAST_INSERT_ID()");
@@ -60,15 +68,26 @@ public class PersonRepository implements IPersonRepository<Person>{
 
     @Override
     public void update(Person person) {
-
-        String sqlStatement = "UPDATE person SET lastName = ?, firstName = ?, telephone = ? WHERE id = ?";
+        String sqlStatement;
+        String sqlStatement2 = "";
+        if (person.getTableNumber() == 0){
+            sqlStatement = "UPDATE person SET lastName = ?, firstName = ?, telephone = ? WHERE id = " + person.getId();
+            sqlStatement2 = "UPDATE person SET table_id = NULL WHERE id = " + person.getId();
+        }else 
+            sqlStatement = "UPDATE person SET lastName = ?, firstName = ?, telephone = ?, table_id =? WHERE id = "+ person.getId();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setString(1, person.getLastName());
             preparedStatement.setString(2, person.getFirstName());
             preparedStatement.setString(3, person.getTelephone());
-            preparedStatement.setInt(4, person.getId());
+            if (person.getTableNumber() != 0)
+                preparedStatement.setInt(4, person.getTableNumber());
             preparedStatement.executeUpdate();
+
+            if(person.getTableNumber() == 0){
+                PreparedStatement preparedStatement2 = connection.prepareStatement(sqlStatement2);
+                preparedStatement2.executeUpdate();
+            }
           
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,8 +96,26 @@ public class PersonRepository implements IPersonRepository<Person>{
 
     @Override
     public List<Person> getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+        List<Person> persons = new ArrayList<>();
+
+        String sqlStatement = "SELECT * FROM person";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                Person person = new Person();
+                person.setId(resultSet.getInt("id"));
+                person.setLastName(resultSet.getString("lastName"));
+                person.setFirstName(resultSet.getString("firstName"));
+                person.setTelephone(resultSet.getString("telephone"));
+                person.setTableNumber(resultSet.getInt("table_id"));
+                persons.add(person);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return persons;
     }
 
 	@Override

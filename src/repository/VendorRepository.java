@@ -20,8 +20,7 @@ public class VendorRepository implements IPersonRepository<Vendor>{
 
     @Override
     public Vendor getById(int id) {
-        Vendor vendor = new Vendor();
-        vendor = (Vendor) personRepository.getById(id);
+        Vendor vendor = new Vendor(personRepository.getById(id));
 
         String sqlStatement = "SELECT * FROM vendor WHERE id = " + id;
         try{
@@ -54,6 +53,7 @@ public class VendorRepository implements IPersonRepository<Vendor>{
                 vendor.setLastName(resultSet.getString("lastName"));
                 vendor.setFirstName(resultSet.getString("firstName"));
                 vendor.setTelephone(resultSet.getString("telephone"));
+                vendor.setTableNumber(resultSet.getInt("table_id"));
                 vendor.setPrice(resultSet.getInt("price"));
                 vendor.setServiceType(resultSet.getString("service_type"));
                 vendor.setNotes(resultSet.getString("notes"));
