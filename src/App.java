@@ -6,7 +6,9 @@ public class App {
 
         Service service = Service.getInstance();
         int mainInput = -1;
-        while (mainInput != 7) {
+        FileService fileService = FileService.getInstance();
+        fileService.logAction("Application started");
+        while (mainInput != 6) {
             
             mainInput = service.MainMenu();
             switch(mainInput){
@@ -52,6 +54,7 @@ public class App {
                 case 3:
                     input = -1;
                     while (input != 5 ) {
+
                         input = service.tableMenu();
                         switch (input) {
                             case 1:
@@ -113,6 +116,12 @@ public class App {
                     }
                     break;
                 case 5:
+                    service.clearScreen();
+                    System.out.println("Generating report...");
+                    fileService.genWeddingReport();
+                    service.waitForAnyKey();
+                    break;
+                case 6:
                     service.exit();
                     break;
 

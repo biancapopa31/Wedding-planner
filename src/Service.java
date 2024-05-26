@@ -21,6 +21,8 @@ public class Service {
 
     private static Connection connection;
 
+    private static FileService fileService;
+
     private static IWeddingRepository weddingRepository;
     private static IPersonRepository<Person> personRepository;
     private static IPersonRepository<Guest> guestRepository;
@@ -40,6 +42,7 @@ public class Service {
         guestRepository = new GuestRepository(connection);
         vendorRepository = new VendorRepository(connection);
         tableRepository = new TableRepository(connection);
+        fileService = FileService.getInstance();
 
     }
 
@@ -71,18 +74,21 @@ public class Service {
     }
 
     public int MainMenu(){
+        fileService.logAction("Main menu");
         clearScreen();
         System.out.println("Welcome to your wedding planner!\n\n");
         System.out.println("1. General wedding information");
         System.out.println("2. Guests");
         System.out.println("3. Tables");
         System.out.println("4. Vendors");
-        System.out.println("5. Exit");
+        System.out.println("5. Generate statistics");
+        System.out.println("6. Exit");
 
         return userInput();
     }
 
     public int generalInformationMenu(){
+        fileService.logAction("General information menu");
         clearScreen();
         System.out.println("General wedding information");
 
@@ -133,6 +139,7 @@ public class Service {
     }
 
     public int guestsMenu(){
+        fileService.logAction("Guest menu");
         clearScreen();
         System.out.println("Guest menu");
         System.out.println("\n\n1. Show guests");
@@ -146,6 +153,7 @@ public class Service {
     }
 
     public int tableMenu(){
+        fileService.logAction("Table menu");
         clearScreen();
         System.out.println("Table menu");
         System.out.println("\n\n1. Show tables");
@@ -158,19 +166,21 @@ public class Service {
     }
 
     public int vendorMenu(){
+        fileService.logAction("Vendor menu");
         clearScreen();
         System.out.println("Vendor menu");
         System.out.println("\n\n1. Show vendors");
         System.out.println("2. Add vendor");
         System.out.println("3. Remove vendor");
         System.out.println("4. Edit vendor");
-       // System.out.println("5. Find vendor");
+       //TODO: System.out.println("5. Find vendor");
         System.out.println("5. Back to main menu");
 
         return userInput();
     }
 
     public void showVendors(){
+        fileService.logAction("Show vendors");
         System.out.println("Vendor list");
         List<Vendor> vendors = vendorRepository.getAll();
         int n = vendors.size();
@@ -183,19 +193,23 @@ public class Service {
     }
 
     public void showTables(){
+        fileService.logAction("Show tables");
         System.out.println("Table list");
         List<Table> tables = tableRepository.getAll();
         int n = tables.size();
+        TreeSet<Table> sortedTables = new TreeSet<Table>(tables);
 
         System.out.println("Number of tables: " + n);
 
 
-        for (int i = 0; i < n; i++) {
-            System.out.println(tables.get(i)+"\n");
-        }
+        for (Table table : sortedTables) {
+            System.out.println(table+ "\n");
+          }
+          
     }
 
     public void showGuests(){
+        fileService.logAction("Show guests");
         System.out.println("Guest list");
         List<Guest> guests = guestRepository.getAll();
         int n = guests.size();
@@ -208,6 +222,7 @@ public class Service {
     }
 
     public void addVendor(){
+        fileService.logAction("Add vendor");
         clearScreen();
         System.out.println("Add vendor");
         Person newPerson = createPersonFromUserInput();
@@ -227,6 +242,7 @@ public class Service {
     }
 
     public void addTable(){
+        fileService.logAction("Add table");
         clearScreen();
         System.out.println("Add table");
         System.out.print("Enter table number: ");
@@ -245,6 +261,7 @@ public class Service {
     }
 
     public void addGuest(){
+        fileService.logAction("Add guest");
         clearScreen();
         System.out.println("Add guest");
         Person newPerson = createPersonFromUserInput();
@@ -263,6 +280,7 @@ public class Service {
     }
 
     public Person createPersonFromUserInput(){
+        fileService.logAction("Create person from user input");
         System.out.print("Enter last name: ");
         String lastName = scanner.next();
         System.out.print("Enter first name: ");
@@ -276,20 +294,22 @@ public class Service {
     }
 
     public void removeVendor(int index){
+        fileService.logAction("Remove vendor");
         clearScreen();
         Vendor vendor = vendorRepository.getAll().get(index - 1);
         vendorRepository.delete(vendor);
     }
 
     public void removeGuest(int index){
+        fileService.logAction("Remove guest");
         clearScreen();
         Guest guest = guestRepository.getAll().get(index - 1);
         guestRepository.delete(guest);
-        //TODO: Remove guest from table
     }
 
 
     public void removeTable(int index){
+        fileService.logAction("Remove table");
         clearScreen();
         try{
             Table table = tableRepository.get(index);
@@ -302,6 +322,7 @@ public class Service {
 
 
     public void editVendor(int index){
+        fileService.logAction("Edit vendor");
         clearScreen();
         Vendor vendor = vendorRepository.getAll().get(index - 1);
 
@@ -360,6 +381,7 @@ public class Service {
     }
 
     public void editGuest(int index){
+        fileService.logAction("Edit guest");
         clearScreen();
         Guest guest = guestRepository.getAll().get(index - 1);
 
@@ -416,6 +438,7 @@ public class Service {
     }
 
     public void editTable(int index){
+        fileService.logAction("Edit table");
         clearScreen();
         Table table = new Table();
         try{
@@ -497,6 +520,7 @@ public class Service {
     }
 
     public void findGuestFromName(){
+        fileService.logAction("Find guest from name");
         clearScreen();
         System.out.println("Find guest");
         System.out.print("Enter last name or -: ");
@@ -527,6 +551,7 @@ public class Service {
     }
 
     public void editPerson(Person person){
+        fileService.logAction("Edit person");
         int input = -1;
         while (input != 4) {
             clearScreen();
@@ -560,6 +585,7 @@ public class Service {
     }
 
     public void editLocation(Wedding wedding){
+        fileService.logAction("Edit wedding location");
         clearScreen();
         System.out.println("Edit location");
         System.out.println("Current location: " + wedding.getLocation());
@@ -571,6 +597,7 @@ public class Service {
     }
 
     public void editDate(Wedding wedding){
+        fileService.logAction("Edit wedding date");
         clearScreen();
         System.out.println("Edit date");
         System.out.println("Current date: " + wedding.getDate());
@@ -584,5 +611,6 @@ public class Service {
         weddingRepository.updateWedding(wedding);
 
     }
+
 }
 

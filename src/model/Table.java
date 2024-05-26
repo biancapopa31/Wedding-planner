@@ -2,7 +2,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Table {
+public class Table implements Comparable<Table> {
 
     private int tableNumber;
     private int capacity;
@@ -82,5 +82,10 @@ public class Table {
 
         return str;
 
+    }
+
+    @Override
+    public int compareTo(Table o) {
+        return members.size() - o.members.size();
     }
 }
