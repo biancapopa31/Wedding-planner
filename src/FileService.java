@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class FileService {
 
-    private static FileService instance;  // Private static instance for singleton
+    private static FileService instance; 
     private static final String logFile = "./files/log.csv";
-    private static PrintWriter writer;     // Declare writer outside constructor
+    private static PrintWriter writer;     
 
     private FileService() {
         try {
@@ -15,6 +15,7 @@ public class FileService {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     public static synchronized FileService getInstance() {
@@ -41,10 +42,7 @@ public class FileService {
             System.err.println("Error: Log writer not initialized!"); 
         }
     }
-
    
-    public void genWeddingReport() {
-        // Implement genWeddingReport() based on your specific requirements
-    }
+    
 
 }

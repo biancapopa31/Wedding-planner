@@ -118,7 +118,7 @@ public class App {
                 case 5:
                     service.clearScreen();
                     System.out.println("Generating report...");
-                    fileService.genWeddingReport();
+                    service.genWeddingReport();
                     service.waitForAnyKey();
                     break;
                 case 6:

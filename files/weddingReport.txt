@@ -1,0 +1,31 @@
+		Wedding Report
+
+
+Date: 2024-08-10
+Location: Hilton Hotel
+
+
+Bride: Mariana Smith
+Groom: Daniel Johnson
+
+Godmother: Isabella Garcia
+Godfather: Charles Williams
+
+
+Guest statistics:
+Number of guests: 16
+Number of guests attending: 14
+87% of guests are attending
+Number of unsent invitations: 1
+Number of guests not attending: 0
+
+Guests from bride's side: 9
+56% of guests are from bride's side
+Guests from groom's side: 7
+43% of guests are from groom's side
+
+
+Vendor statistics:
+Number of vendors: 2
+Total cost of wedding: 7000
+Most expensive vendor: Olivia Johnson,Catering - 5000.0

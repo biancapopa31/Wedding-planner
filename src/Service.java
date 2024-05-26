@@ -1,9 +1,14 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import enums.InviteStatus;
+import enums.Side;
 import exceptions.TableDoesntExistException;
 import exceptions.TableExistsException;
 import model.*;
@@ -609,8 +614,69 @@ public class Service {
         wedding.setDate(LocalDate.parse(date, formatter));
 
         weddingRepository.updateWedding(wedding);
-
     }
+
+    public void genWeddingReport() {
+        String WeddingReportFile = "./files/weddingReport.txt";
+        Wedding wedding = weddingRepository.getWedding();
+        Person bride = wedding.getBride();
+        Person groom = wedding.getGroom();
+        Person godmother = wedding.getGodmother();
+        Person godfather = wedding.getGodfather();
+    
+        List<Guest> guests = guestRepository.getAll();
+        List<Vendor> vendors = vendorRepository.getAll();
+
+        try (PrintWriter writer = new PrintWriter(WeddingReportFile)) {
+            writer.println("\t\tWedding Report\n\n");
+            writer.println("Date: " + wedding.getDate());
+            writer.println("Location: " + wedding.getLocation());
+            writer.println("\n\nBride: " + bride.getFirstName() + " " + bride.getLastName());
+            writer.println("Groom: " + groom.getFirstName() + " " +groom.getLastName());
+            writer.println("\nGodmother: " + godmother.getFirstName() + " " + godmother.getLastName());
+            writer.println("Godfather: " + godfather.getFirstName() + " " + godfather.getLastName());
+
+            writer.println("\n\nGuest statistics:");
+            int totalNumberOfGuests = guests.size();
+            List <Guest> attendingGuests = guests.stream().filter(guest -> guest.getInviteStatus() == InviteStatus.ATTENDING).collect(Collectors.toList());
+            writer.println("Number of guests: " + totalNumberOfGuests);
+            writer.println("Number of guests attending: " + attendingGuests.size());
+            writer.println(attendingGuests.size()*100/totalNumberOfGuests + "% of guests are attending");
+            List <Guest> notInvited = guests.stream().filter(guest -> guest.getInviteStatus() == InviteStatus.NOT_SENT).collect(Collectors.toList());
+            writer.println("Number of unsent invitations: " + notInvited.size());
+            List <Guest> notAttending = guests.stream().filter(guest -> guest.getInviteStatus() == InviteStatus.NOT_ATTENDING).collect(Collectors.toList());
+            writer.println("Number of guests not attending: " + notAttending.size());
+
+
+            List <Guest> guestsFromBridesSide = guests.stream().filter(guest -> guest.getSide() == Side.BRIDE).collect(Collectors.toList());
+            writer.println("\nGuests from bride's side: " + guestsFromBridesSide.size());
+            writer.println(guestsFromBridesSide.size()*100/totalNumberOfGuests + "% of guests are from bride's side");
+            writer.println("Guests from groom's side: " + (totalNumberOfGuests - guestsFromBridesSide.size()));
+            writer.println((totalNumberOfGuests - guestsFromBridesSide.size())*100/totalNumberOfGuests + "% of guests are from groom's side");
+
+            writer.println("\n\nVendor statistics:");
+            int totalNumberOfVendors = vendors.size();
+            writer.println("Number of vendors: " + totalNumberOfVendors);
+            int weddingCost = vendors.stream().mapToInt(vendor -> (int) vendor.getPrice()).sum();
+            writer.println("Total cost of wedding: " + weddingCost);
+            Vendor mostExpensiveVendor = null;
+            double max = 0;
+            for (Vendor vendor : vendors) {
+                if (vendor.getPrice() > max) {
+                    max = vendor.getPrice();
+                    mostExpensiveVendor = vendor;
+                }
+                
+            }
+            writer.println("Most expensive vendor: " + mostExpensiveVendor.getFirstName() + " " + mostExpensiveVendor.getLastName() + "," + 
+                            mostExpensiveVendor.getServiceType() + " - " + mostExpensiveVendor.getPrice());
+
+        } catch (FileNotFoundException e) {
+            fileService.logAction("Error: Wedding report file not found");
+            e.printStackTrace();  
+        }
+    }
+    
 
 }
 
