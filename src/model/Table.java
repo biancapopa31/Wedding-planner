@@ -69,15 +69,17 @@ public class Table implements Comparable<Table> {
     }
 
     public boolean isFull() {
-        return members.size() == capacity;
+        return members.size() >= capacity;
     }
 
     @Override
     public String toString() {
         String str = "Table: " + tableNumber + " Capacity: " + capacity + "\n";
+        int i = 1;
 
         for (Person guest : members) {
-            str += (guest instanceof Guest ? "Guest\n" : "Vendor\n") + guest + "\n\n";
+            str += i + ". " + (guest instanceof Guest ? "Guest\n" : "Vendor\n") + guest + "\n\n";
+            i++;
         }
 
         return str;
@@ -86,6 +88,6 @@ public class Table implements Comparable<Table> {
 
     @Override
     public int compareTo(Table o) {
-        return members.size() - o.members.size();
+        return o.members.size() - members.size() == 0 ? o.capacity - capacity : o.members.size() - members.size();
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import exceptions.TableDoesntExistException;
 import exceptions.TableExistsException;
+import exceptions.TableIsFullException;
 import model.Table;
 
 public interface ITableRepository {
@@ -15,5 +16,5 @@ public interface ITableRepository {
 
     void delete(Table table);
 
-    void update(Table table);
+    void update(Table table) throws TableIsFullException;
 }

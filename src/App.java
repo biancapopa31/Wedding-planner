@@ -53,7 +53,7 @@ public class App {
                     break;
                 case 3:
                     input = -1;
-                    while (input != 5 ) {
+                    while (input != 7 ) {
 
                         input = service.tableMenu();
                         switch (input) {
@@ -74,6 +74,14 @@ public class App {
                                 service.clearScreen();
                                 service.showTables();
                                 service.editTable(service.userInput());
+                                break;
+                            case 5:
+                                service.clearScreen();
+                                service.clearAllTables();
+                                break;  
+                            case 6:
+                                service.clearScreen();
+                                service.genSeatingPlan();
                                 break;
                             default:
                                 break;

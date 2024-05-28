@@ -11,8 +11,10 @@ import enums.InviteStatus;
 import enums.Side;
 import exceptions.TableDoesntExistException;
 import exceptions.TableExistsException;
+import exceptions.TableIsFullException;
 import model.*;
 import repository.*;
+import java.util.Collections;
 
 public class Service {
 
@@ -95,15 +97,15 @@ public class Service {
     public int generalInformationMenu(){
         fileService.logAction("General information menu");
         clearScreen();
-        System.out.println("General wedding information");
+        System.out.println("General wedding information\n\n");
 
         Wedding wedding = weddingRepository.getWedding();
 
         System.out.println("Location: " + wedding.getLocation());
         System.out.println("Date: " + wedding.getDate());
-        System.out.println("Bride: " + wedding.getBride());
+        System.out.println("\nBride: " + wedding.getBride());
         System.out.println("Groom: " + wedding.getGroom());
-        System.out.println("Godmother: " + wedding.getGodmother());
+        System.out.println("\nGodmother: " + wedding.getGodmother());
         System.out.println("Godfather: " + wedding.getGodfather());
 
         System.out.println("\n\n1. Edit location");
@@ -165,7 +167,9 @@ public class Service {
         System.out.println("2. Add table");
         System.out.println("3. Remove table");
         System.out.println("4. Edit table");
-        System.out.println("5. Back to main menu");
+        System.out.println("5. Clear all tables");
+        System.out.println("6. Generate seating plan");
+        System.out.println("7. Back to main menu");
 
         return userInput();
     }
@@ -199,12 +203,13 @@ public class Service {
 
     public void showTables(){
         fileService.logAction("Show tables");
-        System.out.println("Table list");
+        clearScreen();
+        System.out.println("\n\n\nTable list");
         List<Table> tables = tableRepository.getAll();
         int n = tables.size();
         TreeSet<Table> sortedTables = new TreeSet<Table>(tables);
 
-        System.out.println("Number of tables: " + n);
+        System.out.println("Number of tables: " + n + "\n");
 
 
         for (Table table : sortedTables) {
@@ -215,11 +220,12 @@ public class Service {
 
     public void showGuests(){
         fileService.logAction("Show guests");
-        System.out.println("Guest list");
+        clearScreen();
+        System.out.println("Guest list\n");
         List<Guest> guests = guestRepository.getAll();
         int n = guests.size();
 
-        System.out.println("Number of guests: " + n);
+        System.out.println("Number of guests: " + n + "\n");
 
         for (int i = 0; i < n; i++) {
             System.out.println(i + 1 + ". " + guests.get(i) + "\n");
@@ -521,7 +527,13 @@ public class Service {
                     break;
             }
         }
-        tableRepository.update(table);
+        try{
+            tableRepository.update(table);
+        }
+        catch(TableIsFullException e){
+            System.out.println(e.getMessage());
+            waitForAnyKey();
+        }
     }
 
     public void findGuestFromName(){
@@ -614,6 +626,94 @@ public class Service {
         wedding.setDate(LocalDate.parse(date, formatter));
 
         weddingRepository.updateWedding(wedding);
+    }
+
+    public void clearAllTables(){
+        fileService.logAction("Clear all tables");
+        clearScreen();
+        System.out.println("Clear all tables");
+        System.out.println("Are you sure you want to clear all tables? (y/n)");
+        String input = scanner.next();
+        if(input.equals("y")){
+            List<Table> tables = tableRepository.getAll();
+            for (Table table : tables) {
+                table.clearTable();
+                try {
+                    tableRepository.update(table);
+                } catch (TableIsFullException e) {
+    
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                }
+                table.setMembers(new ArrayList<Person>());
+    
+            }
+        }
+        System.out.println("Tables cleared");
+        waitForAnyKey();
+
+    }
+
+    public void genSeatingPlan(){
+        fileService.logAction("Generate seating plan");
+        System.out.println("Generating seating plan...");
+
+        TreeSet<Table> tables = new TreeSet<Table>(tableRepository.getAll());
+        List<Guest> guests = guestRepository.getAll();
+        List<Vendor> vendors = vendorRepository.getAll();
+        Collections.shuffle(guests);
+        Collections.shuffle(vendors);
+
+
+        for (Table table : tables) {
+            table.clearTable();
+            try {
+                tableRepository.update(table);
+            } catch (TableIsFullException e) {
+
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            table.setMembers(new ArrayList<Person>());
+
+        }
+
+        for (Guest guest : guests) {
+            for (Table table : tables) {
+                if (table.isFull()) {
+                    continue;
+                }
+                tables.remove(table);
+                guest.setTableNumber(table.getTableNumber());
+                table.addMember(guest);
+                tables.add(table);
+                break;
+            }
+        }
+        for (Vendor guest : vendors) {
+            for (Table table : tables) {
+                if (table.isFull()) {
+                    continue;
+                }
+                tables.remove(table);
+                guest.setTableNumber(table.getTableNumber());
+                table.addMember(guest);
+                tables.add(table);
+                break;
+            }
+        }
+
+        for (Table table : tables) {
+            try {
+                tableRepository.update(table);
+            } catch (TableIsFullException e) {
+
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        waitForAnyKey();
     }
 
     public void genWeddingReport() {

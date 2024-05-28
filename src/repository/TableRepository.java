@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import exceptions.TableDoesntExistException;
 import exceptions.TableExistsException;
+import exceptions.TableIsFullException;
 import model.Table;
 import model.Vendor;
 import model.Guest;
@@ -128,9 +129,14 @@ public class TableRepository implements ITableRepository{
     }
 
     @Override
-    public void update(Table table) {
+    public void update(Table table) throws TableIsFullException {
         // update table number for all members
+
         List<Person> members = table.getmembers();
+        List<Person> filter = members.stream().filter(member -> member.getTableNumber() != 0).collect(Collectors.toList());
+        if (filter.size() > table.getCapacity()) {
+            throw new TableIsFullException(table.getTableNumber());
+        }
         for (Person member : members) {
             personRepository.update(member);
         }

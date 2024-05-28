@@ -110,7 +110,9 @@ public class Guest extends Person{
 
     @Override
     public String toString() {
-        return super.toString() + "\nStatus: " + inviteStatus + " Side: " + side + " Role: " + role + " Relationship: " + relationship;
+        
+        return super.toString() + "\nStatus: " + inviteStatus + " Side: " + side + " Role: " + role + " Relationship: " + relationship
+                + "\nTable Number: " + (getTableNumber() == 0 ? "Not assigned" : getTableNumber());
     }
 
 }
